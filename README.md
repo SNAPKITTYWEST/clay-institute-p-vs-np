@@ -1,4 +1,4 @@
-# Hybrid Quantum-Classical SAT Solver + Gnostic P != NP Formalization
+﻿# Hybrid Quantum-Classical SAT Solver + Gnostic P != NP Formalization
 
 [![Lean 4](https://img.shields.io/badge/Lean-4.12.0-blue.svg)](https://leanprover.github.io/)
 [![License](https://img.shields.io/badge/License-SOVEREIGN_SOURCE_LICENSE_v1.0-purple.svg)](LICENSE)
@@ -10,45 +10,45 @@ A Lean 4 formalization combining:
 1. **Hybrid Quantum-Classical SAT Solver** - Polynomial-time classical reduction + Quantum Grover search
 2. **Gnostic P != NP Proof** - Ontological proof via Abjad numerology, thermodynamics, quantum cosmology
 3. **Covenant-NP Mapping** - 1928 Moorish Divine Covenant invariants -> NP languages (WORM chain = P != NP)
-4. **Dead-Man\'s Switch** - Entropy bomb + Poison pill (DMS irreversibility <-> P != NP)
+4. **Dead-Man's Switch** - Entropy bomb + Poison pill (DMS irreversibility <-> P != NP)
 5. **Algebraic Foundation** - Albert algebra J3(O), F4 automorphisms, Nun-space
 6. **NAND Boolean Kernel** - All logic from NAND primitive, covenant invariants as NAND circuits
 
 ## Architecture
 
 `mermaid
-graph TB
-    subgraph BASIC["Basic Layer"]
-        D[Definitions.lean\nLit, Clause, Fml, Asgn]
-        A[Axioms.lean\nreduce_sound, quantum_correct]
+flowchart TB
+    subgraph BASIC[Basic Layer]
+        D[Definitions.lean<br/>Lit, Clause, Fml, Asgn]
+        A[Axioms.lean<br/>reduce_sound, quantum_correct]
     end
 
-    subgraph QUANTUM["Quantum Layer"]
-        G[GroverSearch.lean\nPhase oracle, Diffusion, Grover]
+    subgraph QUANTUM[Quantum Layer]
+        G[GroverSearch.lean<br/>Phase oracle, Diffusion, Grover]
     end
 
-    subgraph PROOFS["Proof Layer"]
-        M[Main.lean\nhybrid_correct]
+    subgraph PROOFS[Proof Layer]
+        M[Main.lean<br/>hybrid_correct]
     end
 
-    subgraph THEORETICAL["Theoretical Layer"]
-        GN[GnosticPNP.lean\nAbjad, Thermodynamics, Quantum, Cosmological]
-        CM[CovenantMapping.lean\n8 invariants -> NP languages]
-        TS[Theoretical.lean\nSynthesis]
+    subgraph THEORETICAL[Theoretical Layer]
+        GN[GnosticPNP.lean<br/>Abjad, Thermodynamics, Quantum, Cosmological]
+        CM[CovenantMapping.lean<br/>8 invariants -> NP languages]
+        TS[Theoretical.lean<br/>Synthesis]
     end
 
-    subgraph ALGEBRAIC["Algebraic Layer"]
-        AA[AlbertAlgebra.lean\nJ3(O), F4, Nun-space]
+    subgraph ALGEBRAIC[Algebraic Layer]
+        AA[AlbertAlgebra.lean<br/>J3(O), F4, Nun-space]
     end
 
-    subgraph DMS["Dead-Man\'s Switch Layer"]
-        EB[EntropyBomb.lean\nSBK split, Heartbeat, Chaos]
-        DI[DMSIrreversibility.lean\nDMS <-> P!=NP]
+    subgraph DMS[Dead-Man's Switch Layer]
+        EB[EntropyBomb.lean<br/>SBK split, Heartbeat, Chaos]
+        DI[DMSIrreversibility.lean<br/>DMS <-> P!=NP]
     end
 
-    subgraph SECURITY["Security Layer"]
-        BK[BooleanKernel.lean\nNAND primitive, circuits]
-        SV[SentryVectors.lean\nSentry, Jordan wipe, Ghost keys]
+    subgraph SECURITY[Security Layer]
+        BK[BooleanKernel.lean<br/>NAND primitive, circuits]
+        SV[SentryVectors.lean<br/>Sentry, Jordan wipe, Ghost keys]
     end
 
     %% Connections
@@ -86,7 +86,7 @@ graph TB
 
 This project formalizes the correctness of a hybrid algorithm for Boolean satisfiability:
 1. **Classical Reduction**: Unit propagation + pure literal elimination (polynomial time)
-2. **Quantum Search**: Grover\'s algorithm on the reduced formula (O(sqrt(2^n)) time)
+2. **Quantum Search**: Grover's algorithm on the reduced formula (O(sqrt(2^n)) time)
 3. **Combination**: Merging assignments to recover a satisfying assignment for the original formula
 
 The formalization proves that if the original formula is satisfiable, the hybrid algorithm returns a satisfying assignment with probability >= 1/2.
@@ -163,11 +163,11 @@ The gap: P = 80 -> 8 (Build/Destroy), NP = 130 -> 4 (Freedom via Nun=50). 8 != 4
 | I7 | Chain Integrity (WORM) | chain covenants, verify integrity, tamper detection | L7 = {chain | forall i: hash_i=H(hash_{i-1}||c_i)} | P |
 | I8 | Nation Verification | verify full nation, Constitution text exists | L8 = {n | verify(n)=PASS} | P |
 
-The P = NP Correspondence: The covenant\'s WORM chain tamper-evidence assumes no poly-time collision finder exists. All other invariants in P. Therefore: Covenant complete in P iff I2 in P iff P = NP. The tamper detection [PASS] test is an empirical witness to P != NP.
+The P = NP Correspondence: The covenant's WORM chain tamper-evidence assumes no poly-time collision finder exists. All other invariants in P. Therefore: Covenant complete in P iff I2 in P iff P = NP. The tamper detection [PASS] test is an empirical witness to P != NP.
 
 Universal Covenant Problem (UCP) = NP-complete (reduces from 3-SAT). The ratification requires all principles (I6) is the SAT constraint.
 
-## Dead-Man\'s Switch (DMS)
+## Dead-Man's Switch (DMS)
 
 Entropy-Bomb: SBK = alpha.beta split in J3(O). Heartbeat maintains beta in RAM. Missed heartbeat -> R_chaos(beta) in Nun-space (max entropy). Chaos sequence discarded -> beta statistically indistinguishable from noise.
 
@@ -206,10 +206,17 @@ All 8 covenant invariants compiled to NAND-only circuits (verified).
 - Lean 4.12.0 (see lean-toolchain)
 - No external dependencies (self-contained, no mathlib required for core)
 
+## Building
+
+`ash
+# If lake build crashes your IDE, try:
+lean --run HybridQuantumSAT/Proofs/Main.lean
+# Or just open the .lean files in VS Code with the Lean 4 extension
+`
 
 ## License
 
-[Sovereign Source License v1.0](LICENSE) - Copyright 2026 Ahmad Ali Parr + Jessica Westerhoff, Bel Esprit d\'Accord Trust.
+[Sovereign Source License v1.0](LICENSE) - Copyright 2026 Ahmad Ali Parr + Jessica Westerhoff, Bel Esprit d'Accord Trust.
 
 ## Authors
 
