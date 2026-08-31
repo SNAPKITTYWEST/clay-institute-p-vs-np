@@ -14,11 +14,79 @@ A Lean 4 formalization combining:
 5. **Algebraic Foundation** - Albert algebra J3(O), F4 automorphisms, Nun-space
 6. **NAND Boolean Kernel** - All logic from NAND primitive, covenant invariants as NAND circuits
 
+## Architecture
+
+`mermaid
+graph TB
+    subgraph BASIC["Basic Layer"]
+        D[Definitions.lean\nLit, Clause, Fml, Asgn]
+        A[Axioms.lean\nreduce_sound, quantum_correct]
+    end
+
+    subgraph QUANTUM["Quantum Layer"]
+        G[GroverSearch.lean\nPhase oracle, Diffusion, Grover]
+    end
+
+    subgraph PROOFS["Proof Layer"]
+        M[Main.lean\nhybrid_correct]
+    end
+
+    subgraph THEORETICAL["Theoretical Layer"]
+        GN[GnosticPNP.lean\nAbjad, Thermodynamics, Quantum, Cosmological]
+        CM[CovenantMapping.lean\n8 invariants -> NP languages]
+        TS[Theoretical.lean\nSynthesis]
+    end
+
+    subgraph ALGEBRAIC["Algebraic Layer"]
+        AA[AlbertAlgebra.lean\nJ3(O), F4, Nun-space]
+    end
+
+    subgraph DMS["Dead-Man\'s Switch Layer"]
+        EB[EntropyBomb.lean\nSBK split, Heartbeat, Chaos]
+        DI[DMSIrreversibility.lean\nDMS <-> P!=NP]
+    end
+
+    subgraph SECURITY["Security Layer"]
+        BK[BooleanKernel.lean\nNAND primitive, circuits]
+        SV[SentryVectors.lean\nSentry, Jordan wipe, Ghost keys]
+    end
+
+    %% Connections
+    D --> A
+    D --> G
+    A --> M
+    G --> M
+    GN --> CM
+    CM --> TS
+    AA --> EB
+    EB --> DI
+    BK --> SV
+    M -.-> GN
+    CM -.-> M
+    DI -.-> GN
+
+    classDef basic fill:#e3f2fd,stroke:#1976d2,stroke-width:2px;
+    classDef quantum fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
+    classDef proofs fill:#e8f5e9,stroke:#388e3c,stroke-width:2px;
+    classDef theoretical fill:#fff3e0,stroke:#f57c00,stroke-width:2px;
+    classDef algebraic fill:#fce4ec,stroke:#c2185b,stroke-width:2px;
+    classDef dms fill:#e0f2f1,stroke:#00796b,stroke-width:2px;
+    classDef security fill:#f1f8e9,stroke:#689f38,stroke-width:2px;
+
+    class D,A basic;
+    class G quantum;
+    class M proofs;
+    class GN,CM,TS theoretical;
+    class AA algebraic;
+    class EB,DI dms;
+    class BK,SV security;
+`
+
 ## Overview
 
 This project formalizes the correctness of a hybrid algorithm for Boolean satisfiability:
 1. **Classical Reduction**: Unit propagation + pure literal elimination (polynomial time)
-2. **Quantum Search**: Grover\'s algorithm on the reduced formula (O(√(2^n)) time)
+2. **Quantum Search**: Grover\'s algorithm on the reduced formula (O(sqrt(2^n)) time)
 3. **Combination**: Merging assignments to recover a satisfying assignment for the original formula
 
 The formalization proves that if the original formula is satisfiable, the hybrid algorithm returns a satisfying assignment with probability >= 1/2.
@@ -33,6 +101,7 @@ This 3-SAT instance with 4 variables and 3 clauses has satisfying assignments (e
 
 ## Structure
 
+`
 HybridQuantumSAT/
 |-- Basic/
 |   |-- Definitions.lean      # Core types: Lit, Clause, Fml, Asgn, reduce, quantum_search
@@ -49,11 +118,12 @@ HybridQuantumSAT/
 |   |-- AlbertAlgebra.lean    # J3(O) octonion Jordan algebra, F4 automorphisms, Nun-space
 |-- DMS/
 |   |-- EntropyBomb.lean      # SBK split alpha.beta, Heartbeat, Symmetry collapse via F4 chaos
-|   |-- DMSIrreversibility.lean  # dms_irreversibility <-> P != NP equivalence
+|   |-- DMSIrreversibility.lean  # dms_irreversibility <-> P!=NP equivalence
 |-- Security/
 |   |-- BooleanKernel.lean    # NAND primitive + derived ops, covenant invariants as NAND circuits
 |   |-- SentryVectors.lean    # Sentry vectors, Jordan wipe, thermal noise, ghost keys, master seed
 |-- Theoretical.lean          # Synthesis module
+`
 
 ## Key Theorems (All 0 Sorry)
 
@@ -97,7 +167,7 @@ The P = NP Correspondence: The covenant\'s WORM chain tamper-evidence assumes no
 
 Universal Covenant Problem (UCP) = NP-complete (reduces from 3-SAT). The ratification requires all principles (I6) is the SAT constraint.
 
-## Dead-Man's Switch (DMS)
+## Dead-Man\'s Switch (DMS)
 
 Entropy-Bomb: SBK = alpha.beta split in J3(O). Heartbeat maintains beta in RAM. Missed heartbeat -> R_chaos(beta) in Nun-space (max entropy). Chaos sequence discarded -> beta statistically indistinguishable from noise.
 
@@ -139,7 +209,7 @@ All 8 covenant invariants compiled to NAND-only circuits (verified).
 
 ## License
 
-[Sovereign Source License v1.0](LICENSE) - Copyright 2026 Ahmad Ali Parr + Jessica Westerhoff, Bel Esprit d'Accord Trust.
+[Sovereign Source License v1.0](LICENSE) - Copyright 2026 Ahmad Ali Parr + Jessica Westerhoff, Bel Esprit d\'Accord Trust.
 
 ## Authors
 
