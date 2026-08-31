@@ -16,70 +16,71 @@ A Lean 4 formalization combining:
 
 ## Architecture
 
-`mermaid
-flowchart TB
-    subgraph BASIC[Basic Layer]
-        D[Definitions.lean<br/>Lit, Clause, Fml, Asgn]
-        A[Axioms.lean<br/>reduce_sound, quantum_correct]
-    end
+`
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           HYBRID QUANTUM-CLASSICAL SAT SOLVER               │
+│                         + GNOSTIC P ≠ NP FORMALIZATION                      │
+└─────────────────────────────────────────────────────────────────────────────┘
 
-    subgraph QUANTUM[Quantum Layer]
-        G[GroverSearch.lean<br/>Phase oracle, Diffusion, Grover]
-    end
+┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+│  BASIC LAYER │    │ QUANTUM LAYER│    │ PROOF LAYER  │
+│  (Blue)      │    │ (Purple)     │    │ (Green)      │
+├──────────────┤    ├──────────────┤    ├──────────────┤
+│ Definitions  │───▶│ GroverSearch │───▶│ Main.lean    │
+│ .lean        │    │ .lean        │    │ hybrid_correct│
+│ Lit, Clause, │    │ Phase oracle │    │ (0 sorry)    │
+│ Fml, Asgn    │    │ Diffusion    │    └──────┬───────┘
+│ reduce,      │    │ Grover search│           │
+│ quantum_srch │    │ success prob │           ▼
+├──────────────┤    │ (0 sorry)    │    ┌──────────────┐
+│ Axioms.lean  │    └──────────────┘    │ THEORETICAL  │
+│ reduce_sound │                         │ LAYER        │
+│ quantum_corr │                         │ (Orange)     │
+│ extends_all  │    ┌──────────────┐    ├──────────────┤
+└──────┬───────┘    │ ALGEBRAIC    │    │ GnosticPNP   │
+       │            │ LAYER        │    │ Abjad 8≠4    │
+       │            │ (Pink)       │    │ Thermodynamic│
+       ▼            ├──────────────┤    │ Quantum-Cosmo│
+┌──────────────┐    │ AlbertAlgebra│    │ Cosmological │
+│ COVENANT     │    │ J3(O) octon  │    │ Conservation │
+│ MAPPING      │    │ F4 automorph │    ├──────────────┤
+│ (Orange)     │    │ Nun-space    │    │ CovenantMap  │
+├──────────────┤    └──────┬───────┘    │ 8 invariants │
+│ CovenantMap  │           │            │ → NP langs   │
+│ .lean        │           ▼            │ UCP NP-compl │
+│ 8 invariants │    ┌──────────────┐    ├──────────────┤
+│ → NP langs   │    │ DMS LAYER    │    │ Theoretical  │
+│ 7 in P, 1 NP │    │ (Teal)       │    │ .lean        │
+│ L2 = CRHF    │    ├──────────────┤    │ Synthesis    │
+└──────┬───────┘    │ EntropyBomb  │    └──────────────┘
+       │            │ SBK split    │
+       │            │ Heartbeat    │
+       ▼            │ F4 chaos     │
+┌──────────────┐    ├──────────────┤
+│ SECURITY     │    │ DMSIrrev.    │
+│ LAYER        │    │ DMS↔P≠NP     │
+│ (Lt Green)   │    └──────────────┘
+├──────────────┤
+│ BooleanKernel│
+│ NAND prim.   │
+│ All derived  │
+├──────────────┤
+│ SentryVect.  │
+│ Jordan wipe  │
+│ Thermal noise│
+│ Ghost keys   │
+│ Master seed  │
+└──────────────┘
 
-    subgraph PROOFS[Proof Layer]
-        M[Main.lean<br/>hybrid_correct]
-    end
+DATA FLOW (solid):  Basic → Quantum → Proof
+                     Covenant → Theoretical
+                     Algebraic → DMS
+                     Boolean → Sentry
 
-    subgraph THEORETICAL[Theoretical Layer]
-        GN[GnosticPNP.lean<br/>Abjad, Thermodynamics, Quantum, Cosmological]
-        CM[CovenantMapping.lean<br/>8 invariants -> NP languages]
-        TS[Theoretical.lean<br/>Synthesis]
-    end
-
-    subgraph ALGEBRAIC[Algebraic Layer]
-        AA[AlbertAlgebra.lean<br/>J3(O), F4, Nun-space]
-    end
-
-    subgraph DMS[Dead-Man's Switch Layer]
-        EB[EntropyBomb.lean<br/>SBK split, Heartbeat, Chaos]
-        DI[DMSIrreversibility.lean<br/>DMS <-> P!=NP]
-    end
-
-    subgraph SECURITY[Security Layer]
-        BK[BooleanKernel.lean<br/>NAND primitive, circuits]
-        SV[SentryVectors.lean<br/>Sentry, Jordan wipe, Ghost keys]
-    end
-
-    %% Connections
-    D --> A
-    D --> G
-    A --> M
-    G --> M
-    GN --> CM
-    CM --> TS
-    AA --> EB
-    EB --> DI
-    BK --> SV
-    M -.-> GN
-    CM -.-> M
-    DI -.-> GN
-
-    classDef basic fill:#e3f2fd,stroke:#1976d2,stroke-width:2px;
-    classDef quantum fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
-    classDef proofs fill:#e8f5e9,stroke:#388e3c,stroke-width:2px;
-    classDef theoretical fill:#fff3e0,stroke:#f57c00,stroke-width:2px;
-    classDef algebraic fill:#fce4ec,stroke:#c2185b,stroke-width:2px;
-    classDef dms fill:#e0f2f1,stroke:#00796b,stroke-width:2px;
-    classDef security fill:#f1f8e9,stroke:#689f38,stroke-width:2px;
-
-    class D,A basic;
-    class G quantum;
-    class M proofs;
-    class GN,CM,TS theoretical;
-    class AA algebraic;
-    class EB,DI dms;
-    class BK,SV security;
+CONCEPTUAL LINKS (dashed):
+  Proof ──────▶ Theoretical
+  Covenant ──▶ Proof
+  DMS ───────▶ Gnostic P≠NP
 `
 
 ## Overview
