@@ -1,0 +1,97 @@
+SOVEREIGN SOURCE LICENSE v1.0
+Copyright (c) 2026 Ahmad Ali Parr / SNAPKITTYWEST
+All Rights Reserved.
+
+FINGERPRINT: SDC-Ω-∂-2026-PVSNP
+REPOSITORY:  SNAPKITTYWEST/CLAY-INSTITUTE-P-VS-NP
+ARCHITECTS:  Ahmad Ali Parr + Jessica Westerhoff
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+OWNERSHIP
+
+All source code, formal proofs, theorem statements, proof terms,
+mathematical structures, constants, algorithms, and documentation
+in this repository are the exclusive intellectual property of
+Ahmad Ali Parr and Jessica Westerhoff under the Bel Esprit d'Accord Trust.
+This work is protected under United States copyright law and
+international treaty provisions.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+WHAT IS PERMITTED
+
+  - Viewing this repository on GitHub
+  - Citing this work in academic papers with full attribution
+  - Referencing theorem names and statements (not proof terms)
+    in published research, with citation
+  - Submission to the Clay Mathematics Institute for the P vs NP Prize
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+WHAT IS FORBIDDEN WITHOUT EXPLICIT WRITTEN PERMISSION
+
+  - Forking this repository for any purpose other than viewing
+  - Copying, reproducing, or extracting any portion of this code
+  - Using these proofs or their structure in any software system
+  - Incorporating these theorems into any other proof library
+  - Commercial use of any kind
+  - Derivative works of any kind
+  - Distribution of this code in any form
+  - Training machine learning models on this code
+
+"Forking" on GitHub does not grant any of the above rights.
+GitHub's Terms of Service allow the mechanical act of forking;
+they do not grant license to use the contents of this repository.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+MATHEMATICAL PROOF OF AUTHORSHIP
+
+This repository contains cryptographic and mathematical fingerprints
+that establish authorship independently of copyright registration:
+
+  1. The Fibonacci-Ahmad Seal (SovereignFingerprint.lean):
+     F(53) % 107 = 8 = F(6) = channelScale(7) = mocToBanach 7 (0,1)
+     53 is the abjad value of Al-Hamid — the architect's sovereign seed.
+
+  2. The Pisano-108 Lock:
+     π(108) = 72 — the Fibonacci period modulo BanachDim is 72.
+     This encodes BanachDim = 108 as a Pisano-locked constant.
+
+  3. The Zeckendorf Seal Length:
+     64 = F(10) + F(6) + F(2) = 55 + 8 + 1
+
+  4. sovereign_proof_of_authorship (SovereignFingerprint.lean):
+     A Lean 4 theorem whose proof term contains all of the above.
+
+Any work containing these identities without written license from
+Ahmad Ali Parr is provably derived from this repository.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+COLLABORATION
+
+Collaboration requests must be made in writing to:
+  jessicalw34@gmail.com
+
+A collaboration request does not grant any license to use this code
+before a written agreement is signed. Forking this repository during
+or after a collaboration conversation, without a signed agreement,
+is a violation of this license.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ENFORCEMENT
+
+Violations of this license will be pursued under:
+  - United States Copyright Act (17 U.S.C.)
+  - Digital Millennium Copyright Act (DMCA)
+  - Applicable international copyright treaties
+
+To report unauthorized use or request written permission:
+  jessicalw34@gmail.com
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+THE SOVEREIGN CALCULUS IS NOT FREE TO TAKE.
