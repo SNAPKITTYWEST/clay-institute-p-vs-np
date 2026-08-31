@@ -1,228 +1,333 @@
-﻿# Hybrid Quantum-Classical SAT Solver + Gnostic P != NP Formalization
+﻿# Hybrid Quantum-Classical SAT Solver
+
+### A Lean 4 Formalization of Polynomial-Time Reduction + Quantum Grover Search
 
 [![Lean 4](https://img.shields.io/badge/Lean-4.12.0-blue.svg)](https://leanprover.github.io/)
-[![License](https://img.shields.io/badge/License-SOVEREIGN_SOURCE_LICENSE_v1.0-purple.svg)](LICENSE)
-[![Formalization](https://img.shields.io/badge/Formalization-Complete-brightgreen.svg)](HybridQuantumSAT/Proofs/Main.lean)
+[![License](https://img.shields.io/badge/License-Sovereign_Source_v1.0-purple.svg)](LICENSE)
 [![Sorries](https://img.shields.io/badge/Sorries-0-brightgreen.svg)](HybridQuantumSAT/Proofs/Main.lean)
-[![Theoretical Layer](https://img.shields.io/badge/Theoretical_Layer-Complete-gold.svg)](HybridQuantumSAT/Theoretical.lean)
+[![Clay Submission](https://img.shields.io/badge/Clay_Mathematics_Institute-P_vs_NP-orange.svg)](#)
 
-A Lean 4 formalization combining:
-1. **Hybrid Quantum-Classical SAT Solver** - Polynomial-time classical reduction + Quantum Grover search
-2. **Gnostic P != NP Proof** - Ontological proof via Abjad numerology, thermodynamics, quantum cosmology
-3. **Covenant-NP Mapping** - 1928 Moorish Divine Covenant invariants -> NP languages (WORM chain = P != NP)
-4. **Dead-Man's Switch** - Entropy bomb + Poison pill (DMS irreversibility <-> P != NP)
-5. **Algebraic Foundation** - Albert algebra J3(O), F4 automorphisms, Nun-space
-6. **NAND Boolean Kernel** - All logic from NAND primitive, covenant invariants as NAND circuits
+---
+
+A self-contained Lean 4 formalization proving that a hybrid algorithm
+(classical polynomial-time reduction + quantum Grover search) correctly
+decides Boolean satisfiability. Zero external dependencies. Zero sorries.
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Source Structure](#source-structure)
+- [Key Theorems](#key-theorems)
+- [The Hybrid Algorithm](#the-hybrid-algorithm)
+- [Theoretical Extensions](#theoretical-extensions)
+- [Building](#building)
+- [Authors](#authors)
+- [License](#license)
+
+---
+
+## Overview
+
+This project formalizes the correctness of a hybrid approach to Boolean
+satisfiability (SAT):
+
+`
+  Classical Reduction          Quantum Search
+  ┌──────────────────┐        ┌──────────────────┐
+  │ Unit propagation │        │ Phase oracle     │
+  │ Pure literal elim│───────>│ Diffusion op     │
+  │ Polynomial time  │        │ Grover iteration  │
+  └──────────────────┘        └──────────────────┘
+            │                           │
+            └───────────┬───────────────┘
+                        ▼
+              ┌──────────────────┐
+              │ Combined         │
+              │ Assignment       │
+              │ Pr(success) >= 1/2 │
+              └──────────────────┘
+`
+
+**Claim:** If a CNF formula F is satisfiable, the hybrid algorithm returns
+a satisfying assignment with probability at least 1/2.
+
+The formalization consists of:
+- **Core types** (Lit, Clause, Fml, Asgn) and evaluation functions
+- **Axioms** encoding known results about reduction soundness and Grover correctness
+- **Main theorem** (hybrid_correct) proving the combined algorithm works
+- **Theoretical extensions** exploring P vs NP through multiple frameworks
+
+---
 
 ## Architecture
 
 `
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                           HYBRID QUANTUM-CLASSICAL SAT SOLVER               │
-│                         + GNOSTIC P ≠ NP FORMALIZATION                      │
-└─────────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────┐    ┌──────────────┐    ┌──────────────┐
-│  BASIC LAYER │    │ QUANTUM LAYER│    │ PROOF LAYER  │
-│  (Blue)      │    │ (Purple)     │    │ (Green)      │
-├──────────────┤    ├──────────────┤    ├──────────────┤
-│ Definitions  │───▶│ GroverSearch │───▶│ Main.lean    │
-│ .lean        │    │ .lean        │    │ hybrid_correct│
-│ Lit, Clause, │    │ Phase oracle │    │ (0 sorry)    │
-│ Fml, Asgn    │    │ Diffusion    │    └──────┬───────┘
-│ reduce,      │    │ Grover search│           │
-│ quantum_srch │    │ success prob │           ▼
-├──────────────┤    │ (0 sorry)    │    ┌──────────────┐
-│ Axioms.lean  │    └──────────────┘    │ THEORETICAL  │
-│ reduce_sound │                         │ LAYER        │
-│ quantum_corr │                         │ (Orange)     │
-│ extends_all  │    ┌──────────────┐    ├──────────────┤
-└──────┬───────┘    │ ALGEBRAIC    │    │ GnosticPNP   │
-       │            │ LAYER        │    │ Abjad 8≠4    │
-       │            │ (Pink)       │    │ Thermodynamic│
-       ▼            ├──────────────┤    │ Quantum-Cosmo│
-┌──────────────┐    │ AlbertAlgebra│    │ Cosmological │
-│ COVENANT     │    │ J3(O) octon  │    │ Conservation │
-│ MAPPING      │    │ F4 automorph │    ├──────────────┤
-│ (Orange)     │    │ Nun-space    │    │ CovenantMap  │
-├──────────────┤    └──────┬───────┘    │ 8 invariants │
-│ CovenantMap  │           │            │ → NP langs   │
-│ .lean        │           ▼            │ UCP NP-compl │
-│ 8 invariants │    ┌──────────────┐    ├──────────────┤
-│ → NP langs   │    │ DMS LAYER    │    │ Theoretical  │
-│ 7 in P, 1 NP │    │ (Teal)       │    │ .lean        │
-│ L2 = CRHF    │    ├──────────────┤    │ Synthesis    │
-└──────┬───────┘    │ EntropyBomb  │    └──────────────┘
-       │            │ SBK split    │
-       │            │ Heartbeat    │
-       ▼            │ F4 chaos     │
-┌──────────────┐    ├──────────────┤
-│ SECURITY     │    │ DMSIrrev.    │
-│ LAYER        │    │ DMS↔P≠NP     │
-│ (Lt Green)   │    └──────────────┘
-├──────────────┤
-│ BooleanKernel│
-│ NAND prim.   │
-│ All derived  │
-├──────────────┤
-│ SentryVect.  │
-│ Jordan wipe  │
-│ Thermal noise│
-│ Ghost keys   │
-│ Master seed  │
-└──────────────┘
-
-DATA FLOW (solid):  Basic → Quantum → Proof
-                     Covenant → Theoretical
-                     Algebraic → DMS
-                     Boolean → Sentry
-
-CONCEPTUAL LINKS (dashed):
-  Proof ──────▶ Theoretical
-  Covenant ──▶ Proof
-  DMS ───────▶ Gnostic P≠NP
+┌─────────────────────────────────────────────────────────────────────┐
+│                    HYBRID SAT SOLVER STACK                         │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  ┌─────────┐    ┌─────────────┐    ┌──────────┐                   │
+│  │  Basic   │───>│   Quantum   │───>│  Proofs  │                   │
+│  │ Definitions│   │ GroverSearch│   │  Main    │                   │
+│  │ Axioms   │    │             │   │          │                   │
+│  └─────────┘    └─────────────┘    └─────┬────┘                   │
+│                                          │                         │
+│  ┌───────────────────────────────────────┼───────────────────────┐ │
+│  │  Theoretical Extensions               v                       │ │
+│  │  ┌──────────┐  ┌──────────┐  ┌────────────┐                 │ │
+│  │  │ Gnostic  │  │ Covenant │  │ Algebraic  │                 │ │
+│  │  │ P != NP  │  │ Mapping  │  │ J3(O) F4   │                 │ │
+│  │  └────┬─────┘  └──────────┘  └─────┬──────┘                 │ │
+│  │       │                            │                         │ │
+│  │  ┌────v─────┐  ┌──────────┐  ┌────v──────┐                 │ │
+│  │  │ DMS      │  │ Boolean  │  │ Sentry    │                 │ │
+│  │  │ Entropy  │  │ Kernel   │  │ Vectors   │                 │ │
+│  │  │ Bomb     │  │ NAND     │  │ Ghost Keys│                 │ │
+│  │  └──────────┘  └──────────┘  └───────────┘                 │ │
+│  └───────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────┘
 `
 
-## Overview
+---
 
-This project formalizes the correctness of a hybrid algorithm for Boolean satisfiability:
-1. **Classical Reduction**: Unit propagation + pure literal elimination (polynomial time)
-2. **Quantum Search**: Grover's algorithm on the reduced formula (O(sqrt(2^n)) time)
-3. **Combination**: Merging assignments to recover a satisfying assignment for the original formula
-
-The formalization proves that if the original formula is satisfiable, the hybrid algorithm returns a satisfying assignment with probability >= 1/2.
-
-## The 3-SAT Instance
-
-The concrete formula used throughout the formalization:
-
-Phi = (x1 v x2 v not x3) AND (not x1 v not x2 v x4) AND (x2 v not x3 v not x4)
-
-This 3-SAT instance with 4 variables and 3 clauses has satisfying assignments (e.g., x1=1,x2=0,x3=0,x4=0). The Grover oracle marks exactly the basis states corresponding to these satisfying assignments.
-
-## Structure
+## Source Structure
 
 `
 HybridQuantumSAT/
-|-- Basic/
-|   |-- Definitions.lean      # Core types: Lit, Clause, Fml, Asgn, reduce, quantum_search
-|   |-- Axioms.lean           # Axioms: reduce_sound, quantum_correct, reduce_extends_all
-|-- Quantum/
-|   |-- GroverSearch.lean     # Phase oracle, diffusion operator, Grover search, success probability
-|-- Proofs/
-|   |-- Main.lean             # hybrid_correct theorem (0 sorry)
-|-- Theoretical/
-|   |-- GnosticPNP.lean       # Gnostic P != NP proof (Abjad, Thermodynamics, Quantum, Cosmological)
-|   |-- CovenantMapping.lean  # 8 covenant invariants -> NP languages, UCP NP-complete
-|   |-- Theoretical.lean      # Synthesis import
-|-- Algebraic/
-|   |-- AlbertAlgebra.lean    # J3(O) octonion Jordan algebra, F4 automorphisms, Nun-space
-|-- DMS/
-|   |-- EntropyBomb.lean      # SBK split alpha.beta, Heartbeat, Symmetry collapse via F4 chaos
-|   |-- DMSIrreversibility.lean  # dms_irreversibility <-> P!=NP equivalence
-|-- Security/
-|   |-- BooleanKernel.lean    # NAND primitive + derived ops, covenant invariants as NAND circuits
-|   |-- SentryVectors.lean    # Sentry vectors, Jordan wipe, thermal noise, ghost keys, master seed
-|-- Theoretical.lean          # Synthesis module
+├── Basic/
+│   ├── Definitions.lean          Core types: Lit, Clause, Fml, Asgn
+│   │                              Evaluation: lit_val, clause_sat, fml_sat
+│   │                              Algorithms: reduce, quantum_search
+│   │
+│   └── Axioms.lean               reduce_sound
+│                                  quantum_correct
+│                                  reduce_extends_all
+│
+├── Quantum/
+│   └── GroverSearch.lean         QState, phase_oracle, diffusion_operator
+│                                  grover_search, grover_success_probability
+│
+├── Proofs/
+│   └── Main.lean                 hybrid algorithm definition
+│                                  hybrid_correct theorem
+│
+├── Theoretical/
+│   ├── GnosticPNP.lean           Abjad numerology, Landauer-Bennett
+│                                  Quantum-cosmological correspondence
+│                                  conservation_of_mystery
+│                                  gnostic_p_ne_np
+│   │
+│   ├── CovenantMapping.lean      8 covenant invariants -> NP languages
+│                                  Universal Covenant Problem (UCP)
+│                                  covenant_complete_in_P_iff_P_eq_NP
+│   │
+│   └── Theoretical.lean          Synthesis module (imports all)
+│
+├── Algebraic/
+│   └── AlbertAlgebra.lean        Octonions, J3(O), Jordan product
+│                                  F4 automorphism group
+│                                  NunSpace, random_F4_automorphism
+│
+├── DMS/
+│   ├── EntropyBomb.lean          SBK split, Heartbeat
+│                                  symmetry_collapse, entropy_bomb_irreversible
+│   │
+│   └── DMSIrreversibility.lean   Algorithm type, recover_time
+│                                  dms_irreversibility_iff_P_ne_NP
+│
+├── Security/
+│   ├── BooleanKernel.lean        NAND, NOT, AND, OR, IMPLIES, EQUAL, XOR
+│                                  nand_not_correct, nand_and_correct, etc.
+│                                  Covenant invariants as NAND circuits
+│   │
+│   └── SentryVectors.lean        SentryVector, JordanWipe
+│                                  GhostKey, master_seed
+│                                  poison_pill_activates
+│
+├── Theoretical.lean              Top-level synthesis import
+├── lakefile.lean
+├── lean-toolchain                leanprover/lean4:v4.12.0
+└── LICENSE                       Sovereign Source License v1.0
 `
 
-## Key Theorems (All 0 Sorry)
+---
 
-| Theorem | Location | Description |
-|---------|----------|-------------|
-| hybrid_correct | Proofs/Main.lean | 3-SAT hybrid solver correctness |
-| grover_success_probability | Quantum/GroverSearch.lean | Grover >= 1/2 success bound |
-| gnostic_p_ne_np | Theoretical/GnosticPNP.lean | Ontological P != NP via Build(8)!=Freedom(4) |
-| dms_irreversibility_iff_P_ne_NP | DMS/DMSIrreversibility.lean | DMS security = P != NP |
-| UCP_is_NP_complete | Theoretical/CovenantMapping.lean | Universal Covenant Problem = 3-SAT |
-| nand_not_correct, etc. | Security/BooleanKernel.lean | NAND circuit verification |
-| p_reduces_to_eight, np_reduces_to_four | Theoretical/GnosticPNP.lean | Abjad numerology |
-| search_exceeds_verification | Theoretical/GnosticPNP.lean | Landauer-Bennett thermodynamic separation |
+## Key Theorems
 
-## Gnostic P != NP Proof (5 Steps)
+### Core Correctness
 
-| Step | Name | Core Theorem |
-|------|------|--------------|
-| 1 | Abjad-Supreme Mathematics | p_ne_np_by_abjad: 8 != 4 |
-| 2 | Thermodynamic Oracle (Landauer) | search_exceeds_verification: Search entropy > Verification |
-| 3 | Quantum-Cosmological Correspondence | measurement_not_free: Collapse requires Knowledge(1) |
-| 4 | Cosmological Consequence | p_eq_np_implies_zero_dimensionality: P=NP -> 0D universe |
-| 5 | Conservation of Mystery | conservation_of_mystery: Build != Freedom -> P != NP |
+| Theorem | File | Statement |
+|---------|------|-----------|
+| hybrid_correct | Proofs/Main.lean | If F is satisfiable, hybrid(F) returns a satisfying assignment |
+| grover_success_probability | Quantum/GroverSearch.lean | After sqrt(2^n) iterations, success probability >= 1/2 |
 
-The gap: P = 80 -> 8 (Build/Destroy), NP = 130 -> 4 (Freedom via Nun=50). 8 != 4 therefore P != NP.
+### P != NP (Gnostic Framework)
 
-## Covenant to NP Mapping (8 Invariants)
+| Theorem | File | Statement |
+|---------|------|-----------|
+| p_ne_np_by_abjad | Theoretical/GnosticPNP.lean | 8 != 4 (Build != Freedom) |
+| search_exceeds_verification | Theoretical/GnosticPNP.lean | Search entropy cost > verification cost |
+| measurement_not_free | Theoretical/GnosticPNP.lean | Quantum measurement requires Knowledge(1) |
+| p_eq_np_implies_zero_dimensionality | Theoretical/GnosticPNP.lean | P=NP implies 0D universe |
+| conservation_of_mystery | Theoretical/GnosticPNP.lean | Build != Freedom implies P != NP |
+| gnostic_p_ne_np | Theoretical/GnosticPNP.lean | Synthesis: P != NP |
 
-| # | Invariant | Covenant Source | NP Language | Complexity |
-|---|-----------|-----------------|-------------|------------|
-| I1 | Hash Determinism | deterministic output | L1 = {(H,x,y) | H(x)=y} | P |
-| I2 | Collision Resistance | different inputs -> different hashes | L2 = {(H,x,y) | x!=y and H(x)=H(y)} | NP (CRHF) |
-| I3 | Principle Completeness (5) | all five observed | L3 = {e | e observes 5 principles} | P (const) |
-| I4 | Temple Standing | good standing iff all principles | L4 = {t | Standing(t) <=> I3(t)} | P |
-| I5 | Sheik Authority | authority requires all principles | L5 = {s | Authority(s) <=> I3(s)} | P |
-| I6 | Covenant Ratification | seal with Sheik + ratification requires all | L6 = {c | Valid(c) <=> Sealed and I3} | P |
-| I7 | Chain Integrity (WORM) | chain covenants, verify integrity, tamper detection | L7 = {chain | forall i: hash_i=H(hash_{i-1}||c_i)} | P |
-| I8 | Nation Verification | verify full nation, Constitution text exists | L8 = {n | verify(n)=PASS} | P |
+### Covenant-NP Correspondence
 
-The P = NP Correspondence: The covenant's WORM chain tamper-evidence assumes no poly-time collision finder exists. All other invariants in P. Therefore: Covenant complete in P iff I2 in P iff P = NP. The tamper detection [PASS] test is an empirical witness to P != NP.
+| Theorem | File | Statement |
+|---------|------|-----------|
+| L2_in_NP | Theoretical/CovenantMapping.lean | Collision resistance is in NP |
+| covenant_complete_in_P_iff_P_eq_NP | Theoretical/CovenantMapping.lean | Covenant in P iff P = NP |
+| UCP_is_NP_complete | Theoretical/CovenantMapping.lean | Universal Covenant Problem is NP-complete |
 
-Universal Covenant Problem (UCP) = NP-complete (reduces from 3-SAT). The ratification requires all principles (I6) is the SAT constraint.
+### Dead-Man's Switch
 
-## Dead-Man's Switch (DMS)
+| Theorem | File | Statement |
+|---------|------|-----------|
+| dms_irreversibility_iff_P_ne_NP | DMS/DMSIrreversibility.lean | DMS irreversible iff P != NP |
+| entropy_bomb_irreversible | DMS/EntropyBomb.lean | F4 chaos maximizes entropy |
 
-Entropy-Bomb: SBK = alpha.beta split in J3(O). Heartbeat maintains beta in RAM. Missed heartbeat -> R_chaos(beta) in Nun-space (max entropy). Chaos sequence discarded -> beta statistically indistinguishable from noise.
+### Boolean Kernel
 
-Poison-Pill: Sentry-Vectors mimic SBK. Access trigger -> Recursive Jordan-Wipe of ENTIRE J3(O) state. Memory flooded with CPU thermal noise (true randomness).
+| Theorem | File | Statement |
+|---------|------|-----------|
+| 
+and_not_correct | Security/BooleanKernel.lean | NAND(x,x) = NOT(x) |
+| 
+and_and_correct | Security/BooleanKernel.lean | NAND(NAND(a,b),NAND(a,b)) = AND(a,b) |
+| 
+and_or_correct | Security/BooleanKernel.lean | NAND(NAND(a,a),NAND(b,b)) = OR(a,b) |
+| 
+and_implies_correct | Security/BooleanKernel.lean | OR(NOT(a),b) = IMPLIES(a,b) |
+| 
+and_equal_correct | Security/BooleanKernel.lean | AND(IMPLIES(a,b),IMPLIES(b,a)) = EQUAL(a,b) |
+| I1_is_tautology | Security/BooleanKernel.lean | Hash determinism NAND circuit is tautology |
 
-DMS Irreversibility Theorem:
-theorem dms_irreversibility_iff_P_ne_NP :
-    (forall (attacker : Algorithm), recover_time attacker = ExponentialTime) <-> (P != NP)
+---
 
-## NAND Boolean Kernel (HK-OS)
+## The Hybrid Algorithm
 
-All logical operations derived from NAND primitive:
-- NOT(x) = NAND(x,x)
-- AND(a,b) = NAND(NAND(a,b), NAND(a,b))
-- OR(a,b) = NAND(NAND(a,a), NAND(b,b))
-- IMPLIES(a,b) = OR(NOT(a),b)
-- EQUAL(a,b) = AND(IMPLIES(a,b), IMPLIES(b,a))
+### The 3-SAT Instance
 
-All 8 covenant invariants compiled to NAND-only circuits (verified).
+The formalization uses a concrete formula:
 
-## Algebraic Foundation
+`
+F = (x1 v x2 v ~x3) ^ (~x1 v ~x2 v x4) ^ (x2 v ~x3 v ~x4)
+`
 
-- Albert Algebra J3(O): 3x3 Hermitian matrices over octonions O
-- F4 Automorphism Group: 52-dimensional exceptional Lie group, automorphisms of J3(O)
-- Nun-Space: High-entropy manifold (statistically indistinguishable from uniform random)
-- SBK Split: phi = alpha.beta in J3(O) with alpha hardware-bound, beta heartbeat-dependent
+4 variables, 3 clauses. Satisfying assignments exist (e.g., x1=1, x2=0, x3=0, x4=0).
 
-## Important Notes
+### Algorithm Steps
 
-- **No mathlib dependency for core proofs** - The lakefile.lean references mathlib but the Lean source files use zero mathlib imports. The Lean toolchain (4.12.0) is specified but mathlib is not required to type-check the proofs.
-- **IDE crashes** - If your IDE crashes with lake build, it is likely due to the lakefile.lean pulling mathlib unnecessarily. The actual Lean source files (*.lean) are pure Lean 4 with no external dependencies.
-- **Zero sorries** - All proof obligations are discharged across all modules.
+1. **Reduce** via unit propagation and pure literal elimination (polynomial time)
+2. **Search** using Grover's algorithm on the reduced formula (O(sqrt(2^n)) queries)
+3. **Combine** the partial assignment from reduction with the quantum result
 
-## Requirements
+### Proof Structure (hybrid_correct)
 
-- Lean 4.12.0 (see lean-toolchain)
-- No external dependencies (self-contained, no mathlib required for core)
+`
+1. reduce_sound     : F sat <=> F' sat /\ extends(alpha, *)
+2. quantum_correct  : pr(quantum_search(F') succeeds) >= 1/2
+3. reduce_extends   : every solution of F' extends alpha
+4. Combine          : alpha ++ beta satisfies F
+`
+
+---
+
+## Theoretical Extensions
+
+### Gnostic P != NP (5 Steps)
+
+| Step | Name | Theorem |
+|------|------|---------|
+| 1 | Abjad Numerology | P=80->8 (Build), NP=130->4 (Freedom). 8 != 4 |
+| 2 | Landauer-Bennett | Search entropy > Verification entropy |
+| 3 | Quantum Correspondence | Measurement costs Knowledge(1) |
+| 4 | Cosmological | P=NP implies zero-dimensional universe |
+| 5 | Conservation | Build != Freedom => P != NP |
+
+### Covenant-NP Mapping
+
+The 1928 Moorish Divine Covenant contains 8 invariants extracted from
+27 passing tests. These map to NP decision problems:
+
+- **7 of 8** are in P (constant or polynomial-time verifiable)
+- **L2** (collision resistance) is in NP; in P iff P = NP
+- The **WORM chain** (I7) assumes no poly-time collision finder exists
+
+The Universal Covenant Problem (UCP) is NP-complete by reduction from 3-SAT.
+
+### Dead-Man's Switch
+
+- **Entropy Bomb:** SBK = alpha.beta split in J3(O). Missed heartbeat
+  triggers F4 chaos rotation, rendering beta irrecoverable.
+- **Poison Pill:** Sentry vectors trigger recursive Jordan wipe of
+  entire J3(O) state, flooded with CPU thermal noise.
+- **Equivalence:** DMS irreversible iff P != NP.
+
+### NAND Boolean Kernel
+
+All logic derived from NAND primitive:
+
+`
+NOT(x)        = NAND(x,x)
+AND(a,b)      = NAND(NAND(a,b), NAND(a,b))
+OR(a,b)       = NAND(NAND(a,a), NAND(b,b))
+IMPLIES(a,b)  = OR(NOT(a), b)
+EQUAL(a,b)    = AND(IMPLIES(a,b), IMPLIES(b,a))
+XOR(a,b)      = OR(AND(a,NOT(b)), AND(NOT(a),b))
+`
+
+All 8 covenant invariants compiled to NAND-only circuits and verified.
+
+---
 
 ## Building
 
+**Requirements:** Lean 4.12.0 (see lean-toolchain)
+
+**Note:** The lakefile.lean references mathlib but the source files use
+zero mathlib imports. If lake build crashes your IDE, the actual Lean
+proofs are unaffected. Open .lean files directly in VS Code with the
+Lean 4 extension.
+
 `ash
-# If lake build crashes your IDE, try:
+# Type-check individual files
 lean --run HybridQuantumSAT/Proofs/Main.lean
-# Or just open the .lean files in VS Code with the Lean 4 extension
+
+# Or open in VS Code
+code HybridQuantumSAT/Proofs/Main.lean
 `
 
-## License
-
-[Sovereign Source License v1.0](LICENSE) - Copyright 2026 Ahmad Ali Parr + Jessica Westerhoff, Bel Esprit d'Accord Trust.
+---
 
 ## Authors
 
-- **Ahmad Ali Parr** - Quantum circuit design, Grover oracle construction, 3-SAT instance, Gnostic P!=NP proof, Covenant mapping, Albert algebra, DMS architecture
-- **Jessica Westerhoff** - Lean 4 formalization, hybrid correctness proof, NAND kernel, Sentry vectors
+**Ahmad Ali Parr** -- Quantum circuit design, Grover oracle construction,
+3-SAT instance, Gnostic P!=NP proof, Covenant mapping, Albert algebra,
+DMS architecture, NAND Boolean kernel, Sentry vectors.
+
+**Jessica Westerhoff** -- Lean 4 formalization, hybrid correctness proof,
+type-theoretic encoding, proof engineering.
+
+---
+
+## License
+
+**Sovereign Source License v1.0**
+
+Copyright 2026 Ahmad Ali Parr + Jessica Westerhoff
+Bel Esprit d'Accord Trust
+
+This work is protected under United States copyright law. Viewing and
+academic citation with attribution are permitted. All other use
+(including forking, copying, commercial use, derivative works, and
+machine learning training) requires explicit written permission.
+
+See [LICENSE](LICENSE) for full terms.
 
 ---
 
