@@ -36,19 +36,19 @@ satisfiability (SAT):
 
 `
   Classical Reduction          Quantum Search
-  ┌──────────────────┐        ┌──────────────────┐
-  │ Unit propagation │        │ Phase oracle     │
-  │ Pure literal elim│───────>│ Diffusion op     │
-  │ Polynomial time  │        │ Grover iteration  │
-  └──────────────────┘        └──────────────────┘
-            │                           │
-            └───────────┬───────────────┘
-                        ▼
-              ┌──────────────────┐
-              │ Combined         │
-              │ Assignment       │
-              │ Pr(success) >= 1/2 │
-              └──────────────────┘
+  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”        â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+  â”‚ Unit propagation â”‚        â”‚ Phase oracle     â”‚
+  â”‚ Pure literal elimâ”‚â”€â”€â”€â”€â”€â”€â”€>â”‚ Diffusion op     â”‚
+  â”‚ Polynomial time  â”‚        â”‚ Grover iteration  â”‚
+  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜        â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+            â”‚                           â”‚
+            â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                        â–¼
+              â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+              â”‚ Combined         â”‚
+              â”‚ Assignment       â”‚
+              â”‚ Pr(success) >= 1/2 â”‚
+              â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 `
 
 **Claim:** If a CNF formula F is satisfiable, the hybrid algorithm returns
@@ -65,30 +65,30 @@ The formalization consists of:
 ## Architecture
 
 `
-┌─────────────────────────────────────────────────────────────────────┐
-│                    HYBRID SAT SOLVER STACK                         │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  ┌─────────┐    ┌─────────────┐    ┌──────────┐                   │
-│  │  Basic   │───>│   Quantum   │───>│  Proofs  │                   │
-│  │ Definitions│   │ GroverSearch│   │  Main    │                   │
-│  │ Axioms   │    │             │   │          │                   │
-│  └─────────┘    └─────────────┘    └─────┬────┘                   │
-│                                          │                         │
-│  ┌───────────────────────────────────────┼───────────────────────┐ │
-│  │  Theoretical Extensions               v                       │ │
-│  │  ┌──────────┐  ┌──────────┐  ┌────────────┐                 │ │
-│  │  │ Gnostic  │  │ Covenant │  │ Algebraic  │                 │ │
-│  │  │ P != NP  │  │ Mapping  │  │ J3(O) F4   │                 │ │
-│  │  └────┬─────┘  └──────────┘  └─────┬──────┘                 │ │
-│  │       │                            │                         │ │
-│  │  ┌────v─────┐  ┌──────────┐  ┌────v──────┐                 │ │
-│  │  │ DMS      │  │ Boolean  │  │ Sentry    │                 │ │
-│  │  │ Entropy  │  │ Kernel   │  │ Vectors   │                 │ │
-│  │  │ Bomb     │  │ NAND     │  │ Ghost Keys│                 │ │
-│  │  └──────────┘  └──────────┘  └───────────┘                 │ │
-│  └───────────────────────────────────────────────────────────────┘ │
-└─────────────────────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                    HYBRID SAT SOLVER STACK                         â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚                                                                     â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”                   â”‚
+â”‚  â”‚  Basic   â”‚â”€â”€â”€>â”‚   Quantum   â”‚â”€â”€â”€>â”‚  Proofs  â”‚                   â”‚
+â”‚  â”‚ Definitionsâ”‚   â”‚ GroverSearchâ”‚   â”‚  Main    â”‚                   â”‚
+â”‚  â”‚ Axioms   â”‚    â”‚             â”‚   â”‚          â”‚                   â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â””â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”˜                   â”‚
+â”‚                                          â”‚                         â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”‚
+â”‚  â”‚  Theoretical Extensions               v                       â”‚ â”‚
+â”‚  â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”                 â”‚ â”‚
+â”‚  â”‚  â”‚ Gnostic  â”‚  â”‚ Covenant â”‚  â”‚ Algebraic  â”‚                 â”‚ â”‚
+â”‚  â”‚  â”‚ P != NP  â”‚  â”‚ Mapping  â”‚  â”‚ J3(O) F4   â”‚                 â”‚ â”‚
+â”‚  â”‚  â””â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”˜                 â”‚ â”‚
+â”‚  â”‚       â”‚                            â”‚                         â”‚ â”‚
+â”‚  â”‚  â”Œâ”€â”€â”€â”€vâ”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€vâ”€â”€â”€â”€â”€â”€â”                 â”‚ â”‚
+â”‚  â”‚  â”‚ DMS      â”‚  â”‚ Boolean  â”‚  â”‚ Sentry    â”‚                 â”‚ â”‚
+â”‚  â”‚  â”‚ Entropy  â”‚  â”‚ Kernel   â”‚  â”‚ Vectors   â”‚                 â”‚ â”‚
+â”‚  â”‚  â”‚ Bomb     â”‚  â”‚ NAND     â”‚  â”‚ Ghost Keysâ”‚                 â”‚ â”‚
+â”‚  â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜                 â”‚ â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 `
 
 ---
@@ -97,60 +97,60 @@ The formalization consists of:
 
 `
 HybridQuantumSAT/
-├── Basic/
-│   ├── Definitions.lean          Core types: Lit, Clause, Fml, Asgn
-│   │                              Evaluation: lit_val, clause_sat, fml_sat
-│   │                              Algorithms: reduce, quantum_search
-│   │
-│   └── Axioms.lean               reduce_sound
-│                                  quantum_correct
-│                                  reduce_extends_all
-│
-├── Quantum/
-│   └── GroverSearch.lean         QState, phase_oracle, diffusion_operator
-│                                  grover_search, grover_success_probability
-│
-├── Proofs/
-│   └── Main.lean                 hybrid algorithm definition
-│                                  hybrid_correct theorem
-│
-├── Theoretical/
-│   ├── GnosticPNP.lean           Abjad numerology, Landauer-Bennett
-│                                  Quantum-cosmological correspondence
-│                                  conservation_of_mystery
-│                                  gnostic_p_ne_np
-│   │
-│   ├── CovenantMapping.lean      8 covenant invariants -> NP languages
-│                                  Universal Covenant Problem (UCP)
-│                                  covenant_complete_in_P_iff_P_eq_NP
-│   │
-│   └── Theoretical.lean          Synthesis module (imports all)
-│
-├── Algebraic/
-│   └── AlbertAlgebra.lean        Octonions, J3(O), Jordan product
-│                                  F4 automorphism group
-│                                  NunSpace, random_F4_automorphism
-│
-├── DMS/
-│   ├── EntropyBomb.lean          SBK split, Heartbeat
-│                                  symmetry_collapse, entropy_bomb_irreversible
-│   │
-│   └── DMSIrreversibility.lean   Algorithm type, recover_time
-│                                  dms_irreversibility_iff_P_ne_NP
-│
-├── Security/
-│   ├── BooleanKernel.lean        NAND, NOT, AND, OR, IMPLIES, EQUAL, XOR
-│                                  nand_not_correct, nand_and_correct, etc.
-│                                  Covenant invariants as NAND circuits
-│   │
-│   └── SentryVectors.lean        SentryVector, JordanWipe
-│                                  GhostKey, master_seed
-│                                  poison_pill_activates
-│
-├── Theoretical.lean              Top-level synthesis import
-├── lakefile.lean
-├── lean-toolchain                leanprover/lean4:v4.12.0
-└── LICENSE                       Sovereign Source License v1.0
+â”œâ”€â”€ Basic/
+â”‚   â”œâ”€â”€ Definitions.lean          Core types: Lit, Clause, Fml, Asgn
+â”‚   â”‚                              Evaluation: lit_val, clause_sat, fml_sat
+â”‚   â”‚                              Algorithms: reduce, quantum_search
+â”‚   â”‚
+â”‚   â””â”€â”€ Axioms.lean               reduce_sound
+â”‚                                  quantum_correct
+â”‚                                  reduce_extends_all
+â”‚
+â”œâ”€â”€ Quantum/
+â”‚   â””â”€â”€ GroverSearch.lean         QState, phase_oracle, diffusion_operator
+â”‚                                  grover_search, grover_success_probability
+â”‚
+â”œâ”€â”€ Proofs/
+â”‚   â””â”€â”€ Main.lean                 hybrid algorithm definition
+â”‚                                  hybrid_correct theorem
+â”‚
+â”œâ”€â”€ Theoretical/
+â”‚   â”œâ”€â”€ GnosticPNP.lean           Abjad numerology, Landauer-Bennett
+â”‚                                  Quantum-cosmological correspondence
+â”‚                                  conservation_of_mystery
+â”‚                                  gnostic_p_ne_np
+â”‚   â”‚
+â”‚   â”œâ”€â”€ CovenantMapping.lean      8 covenant invariants -> NP languages
+â”‚                                  Universal Covenant Problem (UCP)
+â”‚                                  covenant_complete_in_P_iff_P_eq_NP
+â”‚   â”‚
+â”‚   â””â”€â”€ Theoretical.lean          Synthesis module (imports all)
+â”‚
+â”œâ”€â”€ Algebraic/
+â”‚   â””â”€â”€ AlbertAlgebra.lean        Octonions, J3(O), Jordan product
+â”‚                                  F4 automorphism group
+â”‚                                  NunSpace, random_F4_automorphism
+â”‚
+â”œâ”€â”€ DMS/
+â”‚   â”œâ”€â”€ EntropyBomb.lean          SBK split, Heartbeat
+â”‚                                  symmetry_collapse, entropy_bomb_irreversible
+â”‚   â”‚
+â”‚   â””â”€â”€ DMSIrreversibility.lean   Algorithm type, recover_time
+â”‚                                  dms_irreversibility_iff_P_ne_NP
+â”‚
+â”œâ”€â”€ Security/
+â”‚   â”œâ”€â”€ BooleanKernel.lean        NAND, NOT, AND, OR, IMPLIES, EQUAL, XOR
+â”‚                                  nand_not_correct, nand_and_correct, etc.
+â”‚                                  Covenant invariants as NAND circuits
+â”‚   â”‚
+â”‚   â””â”€â”€ SentryVectors.lean        SentryVector, JordanWipe
+â”‚                                  GhostKey, master_seed
+â”‚                                  poison_pill_activates
+â”‚
+â”œâ”€â”€ Theoretical.lean              Top-level synthesis import
+â”œâ”€â”€ lakefile.lean
+â”œâ”€â”€ lean-toolchain                leanprover/lean4:v4.12.0
+â””â”€â”€ LICENSE                       Sovereign Source License v1.0
 `
 
 ---
