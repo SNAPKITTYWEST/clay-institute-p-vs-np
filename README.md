@@ -1,4 +1,4 @@
-﻿# Hybrid Quantum-Classical SAT Solver
+# Hybrid Quantum-Classical SAT Solver
 
 ### A Lean 4 Formalization of Polynomial-Time Reduction + Quantum Grover Search
 
