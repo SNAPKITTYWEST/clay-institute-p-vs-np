@@ -71,13 +71,6 @@ The formalization relies on three axioms (standard in the literature):
 - Lean 4.12.0 (see lean-toolchain)
 - No external dependencies (self-contained, no mathlib required)
 
-## Building
-
-ash
-# If lake build crashes your IDE, try:
-lean --run HybridQuantumSAT/Proofs/Main.lean
-# Or just open the .lean files in VS Code with the Lean 4 extension
-
 
 ## License
 
