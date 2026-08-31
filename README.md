@@ -21,9 +21,9 @@ The formalization proves that if the original formula is satisfiable, the hybrid
 
 The concrete formula used throughout the formalization (from the Q#/Circom construction) is:
 
-`
-F = (x1 ? x2 ? ¬x3) ? (¬x1 ? ¬x2 ? x4) ? (x2 ? ¬x3 ? ¬x4)
-`
+
+F = (x1 ? x2 ? Â¬x3) ? (Â¬x1 ? Â¬x2 ? x4) ? (x2 ? Â¬x3 ? Â¬x4)
+
 
 This is a 3-SAT instance with 4 variables and 3 clauses. It has satisfying assignments, e.g.:
 - x1=1, x2=0, x3=0, x4=0 (true ? false ? true = true; false ? true ? false = true; false ? true ? true = true)
@@ -33,16 +33,16 @@ The Grover oracle marks exactly the basis states corresponding to these satisfyi
 
 ## Structure
 
-`
+
 HybridQuantumSAT/
 +-- Basic/
-¦   +-- Definitions.lean    # Core types: Lit, Clause, Fml, Asgn, reduce, quantum_search
-¦   +-- Axioms.lean         # Axioms: reduce_sound, quantum_correct, reduce_extends_all
+Â¦   +-- Definitions.lean    # Core types: Lit, Clause, Fml, Asgn, reduce, quantum_search
+Â¦   +-- Axioms.lean         # Axioms: reduce_sound, quantum_correct, reduce_extends_all
 +-- Quantum/
-¦   +-- GroverSearch.lean   # Phase oracle, diffusion operator, Grover search, success probability
+Â¦   +-- GroverSearch.lean   # Phase oracle, diffusion operator, Grover search, success probability
 +-- Proofs/
     +-- Main.lean           # hybrid_correct theorem (all sorry's resolved)
-`
+
 
 ## Key Theorems
 
@@ -56,15 +56,15 @@ HybridQuantumSAT/
 
 The formalization relies on three axioms (standard in the literature):
 
-1. **educe_sound** — Heuristic reduction preserves satisfiability up to assignment extension
-2. **quantum_correct** — Grover search succeeds with probability = 1/2 on satisfiable formulas  
-3. **educe_extends_all** — Every satisfying assignment of the reduced formula extends the partial assignment
+1. Reduce_sound** â€” Heuristic reduction preserves satisfiability up to assignment extension
+2. **quantum_correct** â€” Grover search succeeds with probability = 1/2 on satisfiable formulas  
+3. **Reduce_extends_all** â€” Every satisfying assignment of the reduced formula extends the partial assignment
 
 ## Important Notes
 
-- **No mathlib dependency** — This is a self-contained contribution. The lakefile.lean references mathlib but the Lean files themselves use zero mathlib imports. The Lean toolchain (4.12.0) is specified but mathlib is not required to type-check the proofs.
-- **IDE crashes** — If your IDE crashes with lake build, it's likely due to the lakefile.lean pulling mathlib unnecessarily. The actual Lean source files (*.lean) are pure Lean 4 with no external dependencies.
-- **Zero sorries** — All proof obligations are discharged. The sorry keywords have been replaced with complete proofs.
+ **No mathlib dependency** â€” This is a self-contained contribution. The lakefile.lean references mathlib but the Lean files themselves use zero mathlib imports. The Lean toolchain (4.12.0) is specified but mathlib is not required to type-check the proofs.
+ **IDE crashes** â€” If your IDE crashes with lake build, it's likely due to the lakefile.lean pulling mathlib unnecessarily. The actual Lean source files (*.lean) are pure Lean 4 with no external dependencies.
+ **Zero sorries** â€” All proof obligations are discharged. The sorry keywords have been replaced with complete proofs.
 
 ## Requirements
 
@@ -73,20 +73,20 @@ The formalization relies on three axioms (standard in the literature):
 
 ## Building
 
-`ash
+ash
 # If lake build crashes your IDE, try:
 lean --run HybridQuantumSAT/Proofs/Main.lean
 # Or just open the .lean files in VS Code with the Lean 4 extension
-`
+
 
 ## License
 
-[Sovereign Source License v1.0](LICENSE) — Copyright 2026 Ahmad Ali Parr + Jessica Westerhoff, Bel Esprit d'Accord Trust.
+[Sovereign Source License v1.0](LICENSE) â€” Copyright 2026 Ahmad Ali Parr + Jessica Westerhoff, Bel Esprit d'Accord Trust.
 
 ## Authors
 
-- **Ahmad Ali Parr** — Quantum circuit design, Grover oracle construction, 3-SAT instance
-- **Jessica Westerhoff** — Lean 4 formalization, hybrid correctness proof
+- **Ahmad Ali Parr** â€” Quantum circuit design, Grover oracle construction, 3-SAT instance
+- **Jessica Westerhoff** â€” Lean 4 formalization, hybrid correctness proof
 
 ---
 
