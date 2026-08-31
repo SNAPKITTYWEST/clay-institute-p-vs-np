@@ -136,13 +136,6 @@ All 8 covenant invariants compiled to NAND-only circuits (verified).
 - Lean 4.12.0 (see lean-toolchain)
 - No external dependencies (self-contained, no mathlib required for core)
 
-## Building
-
-`ash
-# If lake build crashes your IDE, try:
-lean --run HybridQuantumSAT/Proofs/Main.lean
-# Or just open the .lean files in VS Code with the Lean 4 extension
-`
 
 ## License
 
