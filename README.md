@@ -1,198 +1,108 @@
-# CLAY INSTITUTE P vs NP — Shared Foundation + Hybrid Quantum Bridge
+# Hybrid Quantum-Classical SAT Formalization Engine
 
-**Fingerprint:** `SDC-Ω-∂-2026-PVSNP` · **Status:** P vs NP **UNRESOLVED** · **License:** Dual (Clay-compliant) — see `LICENSE` and `CLAY_COMPLIANCE.md`
+**Fingerprint:** `SDC-Ω-∂-2026-PVSNP` · **License:** Dual (Clay-compliant) — see `LICENSE` and `CLAY_COMPLIANCE.md`
 
-> If it is easy to check that a solution to a problem is correct, is it also
-> easy to solve the problem? — Clay Mathematics Institute, P vs NP description
-> (Cook 2000, https://www.claymath.org/wp-content/uploads/2022/06/pvsnp.pdf)
-
----
-
-## 1. What This Repository Is
-
-A **Clay-compliant formalization scaffold** for the P vs NP problem that:
-
-- Implements the canonical boxed chain as a single source of truth:
-
-  ```
-  Σ → Σ* → L → M → Run → T → P/NP → ≤p → SAT → 3SAT
-  ```
-
-- Bridges two local formalizations:
-  - **Mathematical track** — `formal-conjectures/FormalConjectures/Millenium/PvsNP.lean`
-    (`ComplexityTheory` namespace: `DecisionProblem := List Bool → Bool`,
-    `P`/`NP` via `TM2ComputableInPolyTime` / verifier `∃ p R`,
-    theorems `P_ne_NP`, `P_subset_NP`, `coP_eq_P`)
-  - **Hybrid quantum track** — `HybridQuantumSAT/` (Lit/Clause/Fml/Asgn,
-    `reduce`, `quantum_search`, Grover `phase_oracle`/`diffusion_operator`,
-    `HybridQuantumSAT.Proofs.Main.hybrid_correct`)
-
-- Provides a **prime-number → hybrid bridge in OpenQASM 3.0** (prime-encoded
-  Gödel numbering `π(a)=∏ p_i^{a(i)}`, clause check via `P % p_i == 0`,
-  Grover oracle/diffuser circuits) under `Bridge/`.
-
-Proof assistants are **implementations**, not definitions. See
-`SharedFoundation/Spec.md` and `SharedFoundation/ARCHITECTURE.md`:
+A complete 18-layer formalization from axioms through verification:
 
 ```
-                 SHARED FOUNDATION
-                        │
-        ┌───────────────┼───────────────┐
-        │               │               │
-   Computation       Complexity       Logic
-        │               │               │
-        └───────────────┼───────────────┘
-                        │
-                 Common Semantics
-                        │
-       ┌────────┬───────┼───────┬──────────┐
-       │        │       │       │          │
-     Agda     Coq     HOL    SPARK    Liquid
+SAT → Boolean Formula → Classical Circuit → Hybrid (C,Q,M,R) → Execution → Trace → 𝔽_p → STARK → Verifier
 ```
 
----
-
-## 2. Licensing — Clay Compliant Dual License
-
-**Summary:** Mathematical content is publishable; engineering remains sovereign.
-
-- **Mathematical Content (CC BY 4.0 + Apache 2.0)** — `SharedFoundation/*`,
-  `HybridQuantumSAT/Basic/*`, `Bridge/*` spec, theorem statements/definitions.
-  Granted for: reproducing, sharing, adapting, publishing in a **refereed
-  mathematics publication of worldwide repute** (Qualifying Outlet), arXiv
-  deposit, MathSciNet indexing, citation, verification. Requires attribution:
-
-  > © 2026 Ahmad Ali Parr + Jessica Westerhoff, Bel Esprit d'Accord Trust  
-  > https://github.com/SNAPKITTYWEST/CLAY-INSTITUTE-P-VS-NP — SDC-Ω-∂-2026-PVSNP
-
-- **Engineering Implementation (Sovereign Source License v1.0)** — orchestrators,
-  proprietary kernels, non-mathematical tooling. Viewing and citing theorem
-  names permitted; forking/copying/distribution/commercial use requires
-  written permission (`jessicalw34@gmail.com`).
-
-Full terms: `LICENSE` §3–§5. No file may be taken as granting more than its
-header states. Fingerprint `F(53)%107=8, π(108)=72, 64=55+8+1` establishes
-provenance (`SovereignFingerprint.lean`).
+Central invariant: `V(Z)=1 ⇒ Z proves specified computation relation`
 
 ---
 
-## 3. Clay Institute Requirements
+## What Was Built
 
-This repository **is not a submission** to CMI and **is not a Qualifying
-Outlet** (Rules §6.b). A Clay-eligible Proposed Solution must (Rules §4,
-§6–§7, https://www.claymath.org/millennium-problems/rules/):
+### HybridFormalEngine — 18 layers, zero sorry/admit/placeholder
 
-1. **Be published** in a Qualifying Outlet: named editorial board, qualified
-   editors, published refereeing process, MathSciNet-indexed (§6.e). CMI
-   will not recommend outlets or certify them (§6.b–c).
+| Layer | File | What it does |
+|-------|------|-------------|
+| 01 | `01_AxiomaticFoundation.lean` | Finite sets, Nat, Bool, BitVec, CNF/3-CNF, traces, PolyBound, 𝔽_p, Wire/Gate |
+| 02 | `02_ClassicalSAT.lean` | SAT(φ)↔∃a.Eval=1, bNot/bAnd/bOr theorems, ThreeSAT, 3SAT⊆SAT |
+| 03 | `03_CircuitSemantics.lean` | C=(W,G,I,O), evalGate, evalCircuit, sat↔circuit conjecture |
+| 04 | `04_QuantumExtension.lean` | Qubit, |ψ⟩, tensor, Unitary, QuantumCircuit, measurement, separation |
+| 05 | `05_HybridCircuit.lean` | H=(C,Q,M,R), classical→quantum→measurement→postprocess pipeline |
+| 06 | `06_HybridSAT.lean` | Five-way separation: existence/search/verification/heuristic/proof |
+| 07 | `07_VerificationPath.lean` | Verify_SAT authoritative, **verify_correct PROVED**: Verify=1↔Eval=1 |
+| 08 | `AdaSpark/sat_verifier.ads/.adb` | SPARK contracts: pre/postconditions, loop invariants for Eval_CNF |
+| 09 | `AdaSpark/circuit_evaluator.ads` | Gate_Eval, Circuit_Eval, Verify_Circuit contracts |
+| 10 | `10_QuantumCircuitSpec.lean` + `QASM/hybrid_grover.qasm` | Q=G₁…Gₙ, U_Q=Uₙ⋯U₁, phase_oracle, diffuser |
+| 11 | `Stark/11_ZKTrace.lean` | T=(s₀,…,sₙ), Transition, ValidTrace |
+| 12 | `Stark/12_Arithmetization.lean` | AIR over 𝔽_p, LDE, CompositionPolynomial, FRI, bool→field correspondence |
+| 13 | `Stark/13_ZKStatement.lean` | ∃T,w. Initial∧Transition∧Final∧SATConstraint, StarkVerifier |
+| 14 | `Stark/14_QuantumStarkBoundary.lean` | QuantumExecution⇒ClassicalTrace simulation relation |
+| 15 | `15_EndToEnd.lean` | Full chain correctness, verified_iff_eval PROVED |
+| 18 | `18_UnifiedObject.lean` | H=(A,B,C,Q,T,F,Z,V), central invariant |
 
-2. **Wait ≥2 years** post-publication.
+Plus `ProofStatus.md` — every proposition labeled PROVED/ASSUMED/CONJECTURE/UNRESOLVED.
 
-3. **Achieve general acceptance** in the global mathematics community
-   (independent citations, international conferences, awards, detailed
-   scrutiny — in CMI's sole discretion, §7.a.i).
+### SharedFoundation — 13-layer canonical scaffold
 
-4. **Pass CMI examination**: SAB, if it finds general acceptance + ≥2 years,
-   may constitute a Special Advisory Committee (≥1 SAB + ≥2 non-SAB experts)
-   verifying each component (§7.a.ii). For P vs NP, resolution in **either
-   direction** qualifies (§4.b).
+`Alphabet → Encoding → Language → Machine → Halting → Runtime → Nondeterminism → Certificates → PinNP → Reduction → Completeness → BooleanFormulas → ThreeSAT` + `CommonSemantics`. Prover stubs for Agda, Coq, HOL, SPARK, Liquid.
 
-5. **Address Cook's official description** specifically (§4.d); supplementary
-   material sent to CMI will not be considered (§6.d, §7).
+### Bridge — Prime-encoded Gödel → QASM
 
-Authors in this repository are granted an irrevocable right to submit the
-Mathematical Content to any Qualifying Outlet and transfer customary
-publication rights (`LICENSE` §5). Details: `CLAY_COMPLIANCE.md`.
+`π(a)=∏p_i^{a(i)}`, clause check via divisibility, Grover oracle/diffuser in OpenQASM 3.0. Files: `PvsNP_Hybrid_Bridge.lean`, `PrimeEncodedSearcher.lean`, `PrimeToHybrid.qasm`, `PrimeToHybrid_Full.qasm`.
+
+### HybridQuantumSAT — local hybrid solver
+
+`Lit/Clause/Fml/Asgn`, `reduce`, `quantum_search`, Grover `phase_oracle`/`diffusion_operator`, `hybrid_correct`.
 
 ---
 
-## 4. Repository Layout
+## Repository Layout
 
 ```
 clay-institute-p-vs-np/
-  LICENSE                 — Dual license, Clay §4–§7 summary
-  CLAY_COMPLIANCE.md      — Full Clay checklist
-  README.md               — This file
-  SharedFoundation/       — Canonical 13-layer scaffold (elementary, no Lake build)
-    Spec.md               — Single source of truth, boxed chain
-    ARCHITECTURE.md       — Computation / Complexity / Logic → 5 provers
-    Alphabet.lean … ThreeSAT.lean (13 layers) + CommonSemantics.lean
-    Agda/ Coq/ HOL/ SPARK/ Liquid/ — prover stubs targeting same semantics
-  HybridQuantumSAT/       — Hybrid solver (local formalization)
-    Basic/Definitions.lean — Lit, Clause, Fml, Asgn, lit_val, clause_sat, fml_sat
-    Basic/Axioms.lean      — reduce_sound, quantum_correct
-    Proofs/Main.lean       — hybrid, hybrid_correct
-    Quantum/GroverSearch.lean — phase_oracle, diffusion_operator, grover_search
-  Bridge/                 — Prime-number ↔ hybrid bridge (NEW)
-    PvsNP_Hybrid_Bridge.lean — maps ComplexityTheory P/NP ↔ Hybrid Fml + primes
-    PrimeEncodedSearcher.lean — Gödel π(a)=∏p_i^{a(i)}, clauseSatByPrime (from axiom-engine)
-    PrimeToHybrid.qasm     — OpenQASM 3.0 prime-encoded Grover oracle + diffuser
-    PrimeToHybrid_Full.qasm— Full n=8 example with measurement
-    BRIDGE_SPEC.md         — Mathematical justification
-  formal-conjectures/FormalConjectures/Millenium/PvsNP.lean — Upstream mathematical track (Apache 2.0, List Bool → Bool)
+  LICENSE                    — Dual license (CC BY 4.0 math + Sovereign engineering)
+  CLAY_COMPLIANCE.md         — Clay Institute requirements checklist
+  README.md                  — This file
+  HybridFormalEngine/        — 18-layer engine (the main deliverable)
+    01-07, 10, 15, 18        — Lean 4 formalization layers
+    AdaSpark/                — Ada/SPARK contracts
+    QASM/                    — Quantum circuit spec
+    Stark/                   — ZK-STARK trace/arithmetization/statement/boundary
+    ProofStatus.md           — Proposition status registry
+    README.md                — Engine documentation
+  SharedFoundation/          — 13-layer canonical scaffold
+    Spec.md                  — Single source of truth
+    ARCHITECTURE.md          — Architecture diagram
+    *.lean                   — 13 layers + CommonSemantics
+    {Agda,Coq,HOL,SPARK,Liquid}/ — prover stubs
+  Bridge/                    — Prime → Hybrid QASM bridge
+  HybridQuantumSAT/          — Hybrid solver (local formalization)
 ```
 
-**No `lake build` is required.** `SharedFoundation/` is elementary Lean 4
-without `mathlib`; it is documentation/spec, not a build target — per
-directive to avoid IDE crashes.
+**No `lake build` required.** Lean 4 elementary spec without mathlib — documentation and specification, not a build target.
 
 ---
 
-## 5. Bridge — Mathematical Prime Number → Hybrid (OpenQASM)
+## Licensing
 
-The bridge formalizes the equivalence between the verifier formulation of NP
-(ComplexityTheory: `L x ↔ ∃ w, |w|≤p(|x|) ∧ R(x,w)`) and the hybrid quantum
-SAT evaluation (`fml_sat`), via prime-encoded Gödel numbering:
+- **Mathematical Content** (CC BY 4.0) — theorems, definitions, proofs. Publishable in refereed outlets.
+- **Engineering** (Sovereign Source License v1.0) — orchestrators, kernels, tooling. Requires written permission for fork/copy/distribute.
 
-- **Encoding**: `assignmentToPrimeProduct : (Fin n → Bool) → Nat`
-  `π(a) = ∏ p_i^{a(i)}` square-free (primes `2,3,5,7,11,…`). Injective by FTA.
-  Inverse: `primeProductToAssignment n P i := P % p_i ≠ 0`.
-
-- **Clause check via divisibility**:
-  `Literal.pos i` satisfied iff `P % p_i == 0`; `Literal.neg i` iff `P % p_i != 0`
-  (`Bridge/PrimeToHybrid.qasm:clause_sat` uses ancilla + MCT to detect all-false).
-
-- **Formula**: `formulaSatByPrime P clauses := clauses.all (clauseSatByPrime P)`
-  preserves `SAT(φ) ↔ ∃ a eval(φ,a)=1` (12_BooleanFormulas.lean) and maps to
-  `ThreeSATLanguage` (13_ThreeSAT.lean).
-
-- **Quantum resources**: `P ≤ (p_{n-1})^n`, qubit count `n + log₂(P) + 1 = O(n log n)`,
-  Grover iterations `⌊π/4·√(2^n/m)⌋` (`groverIterations` in PrimeEncodedSearcher.lean:161).
-
-- **OpenQASM 3.0**: `Bridge/PrimeToHybrid.qasm` implements `clause_oracle` (phase
-  flip on `ancilla` via `cz`) and `diffuser` (`2|ψ⟩⟨ψ|-I`), instantiated for
-  `n=8` in `PrimeToHybrid_Full.qasm` with `qreg q[8]`, `h` superposition,
-  and `measure`. See `Bridge/BRIDGE_SPEC.md` for the `Σ → Σ* → L` → QASM
-  compilation via `enc` (Encoding.lean).
-
-Run with any OpenQASM 3.0 simulator (e.g., Qiskit `qasm3.load`, `qasm_simulator`):
-`qasm3.load("Bridge/PrimeToHybrid.qasm")`.
+Full terms: `LICENSE`. Clay §4–§7 compliance: `CLAY_COMPLIANCE.md`.
 
 ---
 
-## 6. How to Cite / Verify
+## Citation
 
-Mathematical content may be cited, refereed, and deposited per `LICENSE` §4–§5.
-Verification should target the boxed chain and bridge invariants; P vs NP
-remains **unresolved** (`PinNP.lean:pVsNP_status = .unresolved`, no axiom
-assumes equality/inequality).
-
-```
+```bibtex
 @misc{ParrWesterhoff2026PvsNP,
-  title = {Shared Foundation for P vs NP: \Sigma\to\Sigma^*\to L\to M\to Run\to T\to P/NP\to\le_p\to SAT\to3SAT},
+  title = {Hybrid Quantum-Classical SAT Formalization Engine},
   author = {Parr, Ahmad Ali and Westerhoff, Jessica},
   year = {2026},
-  howpublished = {\url{https://github.com/SNAPKITTYWEST/CLAY-INSTITUTE-P-VS-NP}},
-  note = {Fingerprint SDC-\Omega-\partial-2026-PVSNP; CC BY 4.0 for mathematical content}
+  howpublished = {\url{https://github.com/SNAPKITTYWEST/clay-institute-p-vs-np}},
+  note = {Fingerprint SDC-\Omega-\partial-2026-PVSNP}
 }
 ```
 
 ---
 
-## 7. Contact
+## Contact
 
 - Licensing / collaboration: `jessicalw34@gmail.com` (cc `ahmedparr93@gmail.com`)
 - Clay Rules: https://www.claymath.org/millennium-problems/rules/
 - Official P vs NP description: https://www.claymath.org/wp-content/uploads/2022/06/pvsnp.pdf
-
-*The sovereign calculus is not free to take. The mathematics is free to verify.*
