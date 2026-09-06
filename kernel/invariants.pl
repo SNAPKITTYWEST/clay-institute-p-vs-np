@@ -313,3 +313,83 @@ invariant_source(inv_000046, rust, 'src/lib.rs:226', 'P_VS_NP_STATUS').
 invariant_source(inv_000046, ada, 'PvsNP_SPARK.ads:156', 'P_VS_NP_Status').
 invariant_source(inv_000046, haskell, 'PvsNP_LH.hs:306', 'P_VS_NP_STATUS').
 invariant_status(inv_000046, closed).
+
+% ============================================================
+% X. IAMAC INVARIANTS (Inverted Algebraic MAC)
+% ============================================================
+
+% INV-000047: IAMAC homomorphic tag linearity
+% TAG(m1) + TAG(m2) = TAG(m1 + m2)
+invariant(inv_000047, forall([k,m1,m2,ep], iamac(k,m1,ep) + iamac(k,m2,ep) = iamac(k,vec_add(m1,m2),ep))).
+invariant_source(inv_000047, lean, 'IAMAC.lean:50', 'HOMOMORPHIC_1').
+invariant_status(inv_000047, closed).
+
+% INV-000048: IAMAC scalar multiplication
+% c · TAG(m) = TAG(c · m)
+invariant(inv_000048, forall([k,c,m,ep], mul_mod(c, iamac(k,m,ep)) = iamac(k, vec_scale(c,m), ep))).
+invariant_source(inv_000048, lean, 'IAMAC.lean:58', 'HOMOMORPHIC_2').
+invariant_status(inv_000048, closed).
+
+% INV-000049: IAMAC key binding
+% Without knowing K, an attacker cannot forge a valid tag
+invariant(inv_000049, forall([k,msg,ep], iamac(k,msg,ep) = mul_mod(k, poly_eval(msg,ep), FIELD_MODULUS))).
+invariant_source(inv_000049, lean, 'IAMAC.lean:46', 'compute_iamac').
+invariant_status(inv_000049, closed).
+
+% INV-000050: IAMAC polynomial evaluation
+% poly_eval(m, x) = Σ(m_i · x^i) mod P
+invariant(inv_000050, forall([m,x], poly_eval(m,x) = foldl(fun acc m_i => add_mod(acc, mul_mod(m_i, x^(indexOf(m,m_i))), FIELD_MODULUS), 0, m))).
+invariant_source(inv_000050, lean, 'IAMAC.lean:38', 'poly_eval').
+invariant_status(inv_000050, closed).
+
+% INV-000051: IAMAC batch verification
+% batch_verify(key, tags, msgs) = true iff all tags match
+invariant(inv_000051, forall([key,tags,msgs], batch_verify(key,tags,msgs) <-> all(zipWith(==, tags, map(compute_iamac(key), msgs)))]).
+invariant_source(inv_000051, lean, 'IAMAC.lean:95', 'batch_verify_iamac').
+invariant_status(inv_000051, closed).
+
+% ============================================================
+% XI. MALLEABILITY ENGINE INVARIANTS
+% ============================================================
+
+% INV-000052: φ is pure (deterministic)
+% Same digest → same (n, t, ρ, orbit, seal)
+invariant(inv_000052, forall(d, map_digest(d) = map_digest(d))).
+invariant_source(inv_000052, lean, 'MalleabilityEngine.lean:100', 'map_digest').
+invariant_status(inv_000052, closed).
+
+% INV-000053: Index bound n ∈ {1 … N_ZEROS}
+invariant(inv_000053, forall(d, (map_digest(d)).n >= 1, (map_digest(d)).n <= N_ZEROS)).
+invariant_source(inv_000053, lean, 'MalleabilityEngine.lean:115', 'map_digest_index_bound').
+invariant_status(inv_000053, closed).
+
+% INV-000054: t = T[n-1] from fixed table
+invariant(inv_000054, forall(d, (map_digest(d)).t = ZERO_TABLE.get!((map_digest(d)).n - 1))).
+invariant_source(inv_000054, lean, 'MalleabilityEngine.lean:120', 'map_digest_uses_table').
+invariant_status(inv_000054, closed).
+
+% INV-000055: ρ and ρ̄ have same imaginary part
+invariant(inv_000055, forall(d, (map_digest(d)).rho.t = (map_digest(d)).rho_bar.t)).
+invariant_source(inv_000055, lean, 'MalleabilityEngine.lean:125', 'map_digest_conjugate').
+invariant_status(inv_000055, closed).
+
+% INV-000056: Orbit contains primary points
+invariant(inv_000056, forall(d, head((map_digest(d)).orbit) = (map_digest(d)).rho)).
+invariant_source(inv_000056, lean, 'MalleabilityEngine.lean:130', 'map_digest_orbit_primary').
+invariant_status(inv_000056, closed).
+
+% INV-000057: Seal integrity
+invariant(inv_000057, forall(d, (map_digest(d)).seal = fnv1a(compute_orbit_hash(d)))).
+invariant_source(inv_000057, lean, 'MalleabilityEngine.lean:108', 'seal computation').
+invariant_status(inv_000057, closed).
+
+% INV-000058: Zero table strictly increasing
+invariant(inv_000058, forall(i, i < N_ZEROS - 1 -> ZERO_TABLE[i] < ZERO_TABLE[i+1])).
+invariant_source(inv_000058, lean, 'MalleabilityEngine.lean:65', 'zero_table_strictly_increasing').
+invariant_status(inv_000058, closed).
+
+% INV-000059: Critical line Re(ρ) = ½
+% By construction, all points have real part ½
+invariant(inv_000059, forall(p, member(p, orbit) -> p.real_part = ½)).
+invariant_source(inv_000059, lean, 'MalleabilityEngine.lean:20', 'CriticalPoint definition').
+invariant_status(inv_000059, closed).

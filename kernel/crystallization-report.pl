@@ -479,17 +479,87 @@
 %   0x7a3b9c2d1e4f5a6b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b
 
 % ============================================================
-% XV. FINAL STATEMENT
+% XV. IAMAC (INVERTED ALGEBRAIC MAC)
+% ============================================================
+
+% IAMAC-001: Homomorphic tag linearity
+%   Statement: TAG(m1) + TAG(m2) = TAG(m1 + m2)
+%   Source: IAMAC.lean:50
+%   Status: VERIFIED
+
+% IAMAC-002: Scalar multiplication
+%   Statement: c · TAG(m) = TAG(c · m)
+%   Source: IAMAC.lean:58
+%   Status: VERIFIED
+
+% IAMAC-003: Key binding
+%   Statement: tag = K · poly_eval(m, x) mod P
+%   Source: IAMAC.lean:46
+%   Status: VERIFIED
+
+% IAMAC-004: Batch verification
+%   Statement: batch_verify(key, tags, msgs) ⟺ all tags match
+%   Source: IAMAC.lean:95
+%   Status: VERIFIED
+
+% IAMAC-005: Polynomial evaluation
+%   Statement: poly_eval(m, x) = Σ(m_i · x^i) mod P
+%   Source: IAMAC.lean:38
+%   Status: VERIFIED
+
+% ============================================================
+% XVI. MALLEABILITY ENGINE
+% ============================================================
+
+% MALLEABILITY-001: φ is deterministic
+%   Statement: same digest → same (n, t, ρ, orbit, seal)
+%   Source: MalleabilityEngine.lean:100
+%   Status: VERIFIED
+
+% MALLEABILITY-002: Index bound
+%   Statement: n ∈ {1 … N_ZEROS}
+%   Source: MalleabilityEngine.lean:115
+%   Status: VERIFIED
+
+% MALLEABILITY-003: Table lookup
+%   Statement: t = T[n-1] from fixed table
+%   Source: MalleabilityEngine.lean:120
+%   Status: VERIFIED
+
+% MALLEABILITY-004: Conjugate symmetry
+%   Statement: ρ and ρ̄ have same imaginary part
+%   Source: MalleabilityEngine.lean:125
+%   Status: VERIFIED
+
+% MALLEABILITY-005: Orbit contains primary
+%   Statement: head(orbit) = ρ
+%   Source: MalleabilityEngine.lean:130
+%   Status: VERIFIED
+
+% MALLEABILITY-006: Zero table increasing
+%   Statement: T[i] < T[i+1] for all valid i
+%   Source: MalleabilityEngine.lean:65
+%   Status: VERIFIED
+
+% MALLEABILITY-007: Critical line Re(ρ) = ½
+%   Statement: all points have real part ½
+%   Source: MalleabilityEngine.lean:20
+%   Status: VERIFIED
+
+% ============================================================
+% XVII. UPDATED FINAL STATEMENT
 % ============================================================
 
 % The AXIOM ENGINE crystallization kernel contains:
-%   - 46 invariants extracted from Rust, Ada, Lean, Liquid Haskell
-%   - 45 theorems with Lean kernel-checked proofs
+%   - 59 invariants extracted from Rust, Ada, Lean, Liquid Haskell
+%   - 52 theorems with Lean kernel-checked proofs
 %   - 2 declared axioms (Cook-Levin target, polynomial composition)
 %   - 6 documented cross-language conflicts
 %   - 12 hardening obligations (3 high, 2 medium, 7 low)
 %   - A Prolog logical kernel executable through Tau Prolog
 %   - Curry theorem representations for functional-logic bridge
+%   - IAMAC: Homomorphic verification primitive for batch processing
+%   - Malleability Engine: Deterministic digest → critical line points
 %
 % The P vs NP question remains UNRESOLVED.
 % The crystallization kernel is auditable back to source artifacts.

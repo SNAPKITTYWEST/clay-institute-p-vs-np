@@ -67,6 +67,23 @@ invariant(inv_000043, forall(c, check_claim(c) -> c.state \= unknown, c.state \=
 % P vs NP status
 invariant(inv_000046, p_vs_np_status = unresolved).
 
+% IAMAC invariants
+invariant(inv_000047, iamac(k,m1,ep) + iamac(k,m2,ep) = iamac(k, vec_add(m1,m2), ep)).
+invariant(inv_000048, mul_mod(c, iamac(k,m,ep)) = iamac(k, vec_scale(c,m), ep)).
+invariant(inv_000049, iamac(k,msg,ep) = mul_mod(k, poly_eval(msg,ep), FIELD_MODULUS)).
+invariant(inv_000050, poly_eval(m,x) = foldl(fun acc m_i => add_mod(acc, mul_mod(m_i, x^(indexOf(m,m_i))), P), 0, m)).
+invariant(inv_000051, batch_verify(key, tags, msgs) = all(zipWith(==, tags, map(compute_iamac(key), msgs)))).
+
+% Malleability Engine invariants
+invariant(inv_000052, forall(d, map_digest(d) = map_digest(d))).
+invariant(inv_000053, forall(d, (map_digest d).n >= 1, (map_digest d).n <= N_ZEROS)).
+invariant(inv_000054, forall(d, (map_digest d).t = ZERO_TABLE.get!((map_digest d).n - 1))).
+invariant(inv_000055, forall(d, (map_digest d).rho.t = (map_digest d).rho_bar.t)).
+invariant(inv_000056, forall(d, head((map_digest d).orbit) = (map_digest d).rho)).
+invariant(inv_000057, forall(d, (map_digest d).seal = fnv1a(compute_orbit_hash(d)))).
+invariant(inv_000058, forall(i, i < N_ZEROS - 1 -> ZERO_TABLE[i] < ZERO_TABLE[i+1])).
+invariant(inv_000059, forall(p, member(p, orbit) -> p.real_part = 1/2)).
+
 % ============================================================
 % II. THEOREM DEFINITIONS
 % ============================================================
