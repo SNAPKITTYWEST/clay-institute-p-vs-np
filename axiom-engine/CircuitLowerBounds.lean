@@ -17,7 +17,7 @@ import PvsNP
 -- ============================================================
 
 -- PARITY ∉ AC⁰ (Håstad)
-- PARITY requires exponential-size depth-d circuits for constant d
+-- PARITY requires exponential-size depth-d circuits for constant d
 
 -- ============================================================
 -- III. GENERAL CIRCUITS

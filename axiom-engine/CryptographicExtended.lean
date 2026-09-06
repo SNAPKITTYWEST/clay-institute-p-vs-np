@@ -26,7 +26,7 @@ import PvsNP
 
 -- OWF existence ↔ P ≠ UP (unambiguous NP)
 -- OWF existence → P ≠ NP
-- But OWF existence is itself open
+-- But OWF existence is itself open
 
 -- ============================================================
 -- IV. FINAL STATUS

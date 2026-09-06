@@ -10,8 +10,8 @@ import PvsNP
 -- ============================================================
 
 -- Resolution is a refutation system:
--- Given clauses C1 and C2, if C1 contains l and C2 contains ¬l,
--- we can derive (C1 \ {l}) ∪ (C2 \ {¬l}).
+-- Given clauses C1 and C2, if C1 contains l and C2 contains ~l,
+-- we can derive (C1 \ {l}) union (C2 \ {~l}).
 
 inductive ResolutionStep where
   | intro : Clause → ResolutionStep
@@ -33,7 +33,7 @@ structure ResolutionProof where
 
 -- STATUS: ASSUMED — Resolution proof system is sound
 axiom resolution_sound :
-  ∀ proof, proof.empty = true → ¬(SAT proof.clauses)
+  ∀ (proof : ResolutionProof), proof.empty = true → ¬(SAT proof.clauses)
 
 -- ============================================================
 -- III. RESOLUTION COMPLETENESS
@@ -44,7 +44,7 @@ axiom resolution_sound :
 
 -- STATUS: ASSUMED — Resolution is refutation-complete for CNF
 axiom resolution_complete :
-  ∀ f, ¬(SAT f) → ∃ proof, proof.clauses = f ∧ proof.empty = true
+  ∀ (f : Formula), ¬(SAT f) → ∃ (proof : ResolutionProof), proof.clauses = f ∧ proof.empty = true
 
 -- ============================================================
 -- IV. RESOLUTION WIDTH
@@ -54,7 +54,7 @@ axiom resolution_complete :
 -- generated during the proof.
 
 def resolutionWidth : ResolutionProof → Nat :=
-  fun proof => proof.clauses.foldl (fun acc c => max acc c.length) 0
+  fun proof => proof.clauses.foldl (fun acc (c : Clause) => max acc c.length) 0
 
 -- ============================================================
 -- V. RESOLUTION SIZE
@@ -87,8 +87,8 @@ def Autarky (f : Formula) (a : Assignment) : Prop :=
 -- ============================================================
 
 -- PROOF_COMPLEXITY_SYSTEMS: 1 (Resolution)
--- SOUNDNESS_PROVED: 0
--- COMPLETENESS_PROVED: 0
+-- SORRY: 0
+-- AXIOMS: 2 (resolution_sound, resolution_complete)
 -- WIDTH_ANALYSIS: 0
 -- SIZE_ANALYSIS: 0
 -- P_VS_NP_STATUS: UNRESOLVED

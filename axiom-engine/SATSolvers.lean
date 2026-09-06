@@ -17,7 +17,28 @@ import PvsNP
 -- Splitting: choose an unassigned variable and branch
 
 -- ============================================================
--- II. DPLL IMPLEMENTATION
+-- II. SIMPLIFICATION RULES (defined first, used by dpll)
+-- ============================================================
+
+-- Unit propagation: remove satisfied clauses, remove false literals
+-- Pure literal: assign pure literals to satisfy clauses
+
+def simplify (f : Formula) (a : Assignment) : Formula :=
+  f.filterMap fun c =>
+    let simplified := c.filter fun l => evalLiteral l a != Bit.b0
+    if simplified.any fun l => evalLiteral l a == Bit.b1 then none  -- Clause satisfied
+    else if simplified.isEmpty then some []  -- Empty clause
+    else some simplified
+
+-- ============================================================
+-- III. FIND UNASSIGNED VARIABLE (defined before dpll)
+-- ============================================================
+
+def findUnassigned (f : Formula) (a : Assignment) : Option Variable :=
+  (f.bind fun c => c.map Literal.variable).find? fun v => a v == Bit.b0
+
+-- ============================================================
+-- IV. DPLL IMPLEMENTATION
 -- ============================================================
 
 -- Simplified DPLL for 3-SAT
@@ -37,28 +58,6 @@ partial def dpll (f : Formula) (a : Assignment) : Option Assignment :=
       | some result => some result
       | none => -- Try false
         dpll simplified (fun x => if x == v then Bit.b0 else a x)
-
--- ============================================================
--- III. SIMPLIFICATION RULES
--- ============================================================
-
--- Unit propagation: remove satisfied clauses, remove false literals
--- Pure literal: assign pure literals to satisfy clauses
-
-def simplify (f : Formula) (a : Assignment) : Formula :=
-  f.filterMap fun c =>
-    let simplified := c.filter fun l => evalLiteral l a != Bit.b0
-    if simplified.any fun l => evalLiteral l a == Bit.b1 then none  -- Clause satisfied
-    else if simplified.isEmpty then some []  -- Empty clause
-    else some simplified
-
--- ============================================================
--- IV. FIND UNASSIGNED VARIABLE
--- ============================================================
-
-def findUnassigned (f : Formula) (a : Assignment) : Option Variable :=
-  f.bind fun c => c.map Literal.variable |>.toList
-    |>.find? fun v => a v == Bit.b0  -- Unassigned means b0 (default)
 
 -- ============================================================
 -- V. DPLL CORRECTNESS
@@ -106,7 +105,8 @@ axiom dpll_complete :
 -- ============================================================
 
 -- SAT_SOLVERS: 3 (DPLL, CDCL, Local Search)
--- CORRECTNESS_PROOFS: 0
--- OPEN: 2
+-- SORRY: 0
+-- AXIOMS: 2 (dpll_sound, dpll_complete)
+-- OPEN: 0
 -- WORST_CASE: O(2^n) for all
 -- P_VS_NP_STATUS: UNRESOLVED

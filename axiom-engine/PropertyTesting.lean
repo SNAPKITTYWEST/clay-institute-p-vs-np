@@ -19,7 +19,7 @@ import PvsNP
 
 -- Test if f: {0,1}^n → {0,1} is linear
 -- Uses O(1/ε) queries
-- One-sided error
+-- One-sided error
 
 -- ============================================================
 -- III. CONNECTION TO P VS NP

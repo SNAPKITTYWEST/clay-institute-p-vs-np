@@ -142,8 +142,8 @@ def testBlock3 : WORMBlock :=
   { blockIndex := 2, timestamp := 2, agentId := "agent1",
     strategy := 1, stateHash := 11111, prevHash := 99999 }
 
-#eval ValidChain [testBlock1, testBlock2]  -- True
-#eval ValidChain [testBlock1, testBlock2, testBlock3]  -- False
+#check (ValidChain [testBlock1, testBlock2])  -- Prop
+#check (ValidChain [testBlock1, testBlock2, testBlock3])  -- Prop
 
 -- ============================================================
 -- XI. SOVEREIGN CONSTANTS TESTS

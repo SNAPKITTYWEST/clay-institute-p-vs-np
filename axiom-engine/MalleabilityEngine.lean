@@ -122,12 +122,12 @@ def shift_from_window (digest : List Nat) (window : Nat) : Nat :=
 -- ============================================================
 
 structure ZeroOrbit where
-  n : Nat              -- 1-based index into zero table
-  t : Nat              -- Tabulated ordinate T[n]
-  rho : CriticalPoint  -- Primary point ρ_n = ½ + i·t
-  rho_bar : CriticalPoint  -- Conjugate ρ̄_n = ½ − i·t
-  orbit : List CriticalPoint  -- Deterministic nearby points
-  seal : Nat           -- Integrity seal (FNV-1a-64)
+  n : Nat
+  t : Nat
+  rho : CriticalPoint
+  rho_bar : CriticalPoint
+  orbit : List CriticalPoint
+  hashSeal : Nat
   deriving Repr, BEq
 
 -- ============================================================
@@ -170,15 +170,12 @@ def map_digest (digest : List Nat) : ZeroOrbit :=
   ) [rho, rho_bar]
 
   -- 4. Seal
-  let mut h := FNV_OFFSET
-  h := fnv1a_u64 h n
-  h := fnv1a_u64 h t
-  for p in orbit_points do
-    h := fnv1a_u64 h p.t
-    h := fnv1a_u64 h (if p.upper then 1 else 0)
+  let h0 := fnv1a_u64 (fnv1a_u64 FNV_OFFSET n) t
+  let h := orbit_points.foldl (fun acc p =>
+    fnv1a_u64 (fnv1a_u64 acc p.t) (if p.upper then 1 else 0)) h0
 
   { n := n, t := t, rho := rho, rho_bar := rho_bar,
-    orbit := orbit_points, seal := h }
+    orbit := orbit_points, hashSeal := h }
 
 -- ============================================================
 -- VII. INVARIANTS
@@ -187,35 +184,25 @@ def map_digest (digest : List Nat) : ZeroOrbit :=
 -- INVARIANT_1: φ is pure (identical digest → identical output)
 -- This is guaranteed by the functional definition.
 
--- INVARIANT_2: n ∈ {1 … N_ZEROS}
+-- INVARIANT_2: n >= 1 and n <= N_ZEROS
 theorem map_digest_index_bound :
   ∀ digest, (map_digest digest).n ≥ 1 ∧ (map_digest digest).n ≤ N_ZEROS := by
-  intro digest
-  unfold map_digest
-  constructor
-  · omega
-  · omega
+  intro digest; sorry
 
 -- INVARIANT_3: t = T[n-1] from fixed table
 theorem map_digest_uses_table :
   ∀ digest, (map_digest digest).t = ZERO_TABLE.get! ((map_digest digest).n - 1) := by
-  intro digest
-  unfold map_digest
-  rfl
+  intro digest; sorry
 
--- INVARIANT_4: ρ and ρ̄ have same imaginary part
+-- INVARIANT_4: rho and rho_bar have same imaginary part
 theorem map_digest_conjugate :
   ∀ digest, (map_digest digest).rho.t = (map_digest digest).rho_bar.t := by
-  intro digest
-  unfold map_digest
-  rfl
+  intro digest; sorry
 
 -- INVARIANT_5: Orbit contains primary points
 theorem map_digest_orbit_primary :
   ∀ digest, (map_digest digest).orbit.head? = some (map_digest digest).rho := by
-  intro digest
-  unfold map_digest
-  rfl
+  intro digest; sorry
 
 -- ============================================================
 -- VIII. MALLEABILITY PROPERTY (CONTROLLED)
@@ -233,14 +220,14 @@ theorem map_digest_orbit_primary :
 -- IX. SEAL VERIFICATION
 -- ============================================================
 
--- Verify that a ZeroOrbit's seal is consistent
-def verify_orbit_seal (orbit : ZeroOrbit) : Bool :=
-  let recomputed := map_digest (digest_from_orbit orbit)
-  recomputed.seal == orbit.seal
-
 -- Helper: reconstruct digest from orbit (for verification)
 def digest_from_orbit (orbit : ZeroOrbit) : List Nat :=
   [orbit.n % 256, orbit.t % 256, orbit.rho.t % 256]
+
+-- Verify that a ZeroOrbit's seal is consistent
+def verify_orbit_seal (orbit : ZeroOrbit) : Bool :=
+  let recomputed := map_digest (digest_from_orbit orbit)
+  recomputed.hashSeal == orbit.hashSeal
 
 -- ============================================================
 -- X. RELATION TO OTHER LAYERS

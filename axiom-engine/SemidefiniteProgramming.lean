@@ -19,7 +19,7 @@ import PvsNP
 
 -- SDP relaxation for MAX-CUT
 -- 0.878-approximation ratio
-- Implying NP-hard to approximate within 0.9424 (Håstad)
+-- Implying NP-hard to approximate within 0.9424 (Håstad)
 
 -- ============================================================
 -- III. CONNECTION TO P VS NP

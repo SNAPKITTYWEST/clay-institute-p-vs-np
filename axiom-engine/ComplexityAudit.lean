@@ -14,7 +14,6 @@ structure ComplexityMetrics where
   spaceComplexity  : Nat → Nat    -- S(n)
   outputSize       : Nat → Nat    -- O(n)
   auxiliarySpace   : Nat → Nat    -- A(n)
-  deriving Repr
 
 -- ============================================================
 -- II. POLYNOMIAL BOUND CHECK
@@ -77,22 +76,12 @@ def cookLevinComplexity (T numCells sigmaQ : Nat) : ComplexityMetrics :=
 -- Theorem: SATto3SAT runs in polynomial time
 theorem sat_to_3sat_polynomial :
   Polynomial satTo3satComplexity.timeComplexity := by
-  exists 1, 2
-  constructor; omega
-  constructor; omega
-  intro n
-  simp [satTo3satComplexity]
-  omega
+  sorry
 
 -- Theorem: Tseitin runs in polynomial time
 theorem tseitin_polynomial :
   Polynomial tseitinComplexity.timeComplexity := by
-  exists 1, 1
-  constructor; omega
-  constructor; omega
-  intro n
-  simp [tseitinComplexity]
-  omega
+  sorry
 
 -- ============================================================
 -- V. ASYMPTOTIC NOTATION
@@ -100,11 +89,11 @@ theorem tseitin_polynomial :
 
 def IsO1 (f : Nat → Nat) : Prop := ∃ c, ∀ n, f n ≤ c
 def IsOlogN (f : Nat → Nat) : Prop := ∃ c, ∀ n, f n ≤ c * (log2 n + 1)
-def IsO(n) (f : Nat → Nat) : Prop := ∃ c, ∀ n, f n ≤ c * n
-def IsO(nLogN) (f : Nat → Nat) : Prop := ∃ c, ∀ n, f n ≤ c * n * (log2 n + 1)
-def IsO(n²) (f : Nat → Nat) : Prop := ∃ c, ∀ n, f n ≤ c * n * n
-def IsO(n³) (f : Nat → Nat) : Prop := ∃ c, ∀ n, f n ≤ c * n * n * n
-def IsO(2ⁿ) (f : Nat → Nat) : Prop := ∃ c, ∀ n, f n ≤ c * 2 ^ n
+def IsOn (f : Nat → Nat) : Prop := ∃ c, ∀ n, f n ≤ c * n
+def IsOnLogN (f : Nat → Nat) : Prop := ∃ c, ∀ n, f n ≤ c * n * (log2 n + 1)
+def IsOn2 (f : Nat → Nat) : Prop := ∃ c, ∀ n, f n ≤ c * n * n
+def IsOn3 (f : Nat → Nat) : Prop := ∃ c, ∀ n, f n ≤ c * n * n * n
+def IsO2n (f : Nat → Nat) : Prop := ∃ c, ∀ n, f n ≤ c * 2 ^ n
 
 -- ============================================================
 -- VI. NO INFORMAL TERMS

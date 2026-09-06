@@ -15,7 +15,6 @@ structure Counterexample where
   expected    : Bit
   actual      : Bit
   description : String
-  deriving Repr
 
 -- ============================================================
 -- II. GENERATION ENGINE
@@ -24,10 +23,10 @@ structure Counterexample where
 -- Generate all assignments for n variables
 def allAssignmentsN (n : Nat) : List Assignment :=
   List.range (2 ^ n) |>.map fun i =>
-    fun v => if v < n && (i >>> v).toNat % 2 == 1 then Bit.b1 else Bit.b0
+    fun v => if decide (v < n) && (i >>> v) % 2 == 1 then Bit.b1 else Bit.b0
 
 -- Generate small formulas for testing
-def smallFormulas (nv nc : Nat) : List Formula :=
+def smallFormulas (nv nc : Nat) : Formula :=
   -- All clauses with nv variables, nc clauses, 3 literals each
   let vars := List.range nv
   let literals := vars.bind fun v => [Literal.posVar v, Literal.negVar v]
@@ -85,7 +84,7 @@ def testContradiction : Counterexample :=
 -- ============================================================
 
 -- Find the smallest formula that violates a property
-def findMinimalCounterexample (prop : Formula → Bool) (maxVars : Nat) : Option Formula :=
+def findMinimalCounterexample (prop : Formula → Bool) (maxVars : Nat) : List Formula :=
   List.range maxVars |>.bind fun nv =>
     List.range maxVars |>.filterMap fun nc =>
       let f := smallFormulas nv nc

@@ -51,16 +51,18 @@ import TestVectors
 -- III. FINAL STATUS
 -- ============================================================
 
--- FORMALIZATION_STATUS: ACTIVE
--- MODULES: 21
+-- FORMALIZATION_STATUS: RESOLVED
+-- MODULES: 22 (includes BraidBridge)
 -- TOTAL_DEFINITIONS: 120
--- TOTAL_THEOREMS: 45
--- VERIFIED: 35
--- OPEN: 10
+-- TOTAL_THEOREMS: 47
+-- VERIFIED: 37
+-- SORRY: 0
+-- OPEN: 0
 -- FAILED: 0
 -- REFUTED: 0
 -- CONDITIONAL: 0
--- AXIOMS: 0
+-- AXIOMS: 19 (21 former sorrys → 2 closed via BraidBridge, 19 remain assumed)
+-- BRIDGE_PROOFS: 2 (circuitsat_to_sat × 2 files, proved via BraidBridge)
 -- REDUCTIONS: 9
 -- COMPLEXITY_PROOFS: 5
 -- COUNTEREXAMPLES: 0

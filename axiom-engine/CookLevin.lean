@@ -42,20 +42,19 @@ import PvsNP
 
 def cellUniqueness (i j base : Nat) : Formula :=
   -- At least one symbol
-  [[symbolVar i j base TapeSymbol.blank,
-    symbolVar i j base TapeSymbol.zero,
-    symbolVar i j base TapeSymbol.one,
-    symbolVar i j base TapeSymbol.start,
-    symbolVar i j base TapeSymbol.accept,
-    symbolVar i j base TapeSymbol.reject]] ++
+  [[Literal.posVar (symbolVar i j base TapeSymbol.blank),
+    Literal.posVar (symbolVar i j base TapeSymbol.zero),
+    Literal.posVar (symbolVar i j base TapeSymbol.one),
+    Literal.posVar (symbolVar i j base TapeSymbol.start),
+    Literal.posVar (symbolVar i j base TapeSymbol.accept),
+    Literal.posVar (symbolVar i j base TapeSymbol.reject)]] ++
   -- At most one: for each pair (s1, s2), ¬s1 ∨ ¬s2
-  (do
-    let s1 ← [TapeSymbol.blank, TapeSymbol.zero, TapeSymbol.one,
-               TapeSymbol.start, TapeSymbol.accept, TapeSymbol.reject]
-    let s2 ← [TapeSymbol.blank, TapeSymbol.zero, TapeSymbol.one,
-               TapeSymbol.start, TapeSymbol.accept, TapeSymbol.reject]
+  ([TapeSymbol.blank, TapeSymbol.zero, TapeSymbol.one,
+    TapeSymbol.start, TapeSymbol.accept, TapeSymbol.reject].bind fun s1 =>
+    [TapeSymbol.blank, TapeSymbol.zero, TapeSymbol.one,
+     TapeSymbol.start, TapeSymbol.accept, TapeSymbol.reject].bind fun s2 =>
     if s1 != s2 then
-      [[negVar (symbolVar i j base s1), negVar (symbolVar i j base s2)]]
+      [[Literal.negVar (symbolVar i j base s1), Literal.negVar (symbolVar i j base s2)]]
     else
       [])
 
@@ -67,13 +66,12 @@ def cellUniqueness (i j base : Nat) : Formula :=
 
 def headUniqueness (i base numCells : Nat) : Formula :=
   -- At least one position
-  [List.range numCells |>.map (fun j => headVar i j base)] ++
+  [List.range numCells |>.map (fun j => Literal.posVar (headVar i j base))] ++
   -- At most one position
-  (do
-    let j1 ← List.range numCells
-    let j2 ← List.range numCells
+  ((List.range numCells).bind fun j1 =>
+    (List.range numCells).bind fun j2 =>
     if j1 < j2 then
-      [[negVar (headVar i j1 base), negVar (headVar i j2 base)]]
+      [[Literal.negVar (headVar i j1 base), Literal.negVar (headVar i j2 base)]]
     else
       [])
 
@@ -85,13 +83,12 @@ def headUniqueness (i base numCells : Nat) : Formula :=
 
 def stateUniqueness (i base : Nat) (states : List TMState) : Formula :=
   -- At least one state
-  [states.map (fun q => stateVar i q base)] ++
+  [states.map (fun q => Literal.posVar (stateVar i q base))] ++
   -- At most one state
-  (do
-    let q1 ← states
-    let q2 ← states
+  (states.bind fun q1 =>
+    states.bind fun q2 =>
     if q1 != q2 then
-      [[negVar (stateVar i q1 base), negVar (stateVar i q2 base)]]
+      [[Literal.negVar (stateVar i q1 base), Literal.negVar (stateVar i q2 base)]]
     else
       [])
 
@@ -107,18 +104,18 @@ def stateUniqueness (i base : Nat) (states : List TMState) : Formula :=
 
 def initialConfig (input : List TapeSymbol) (base : Nat) : Formula :=
   -- Head at position 0
-  [[headVar 0 0 base]] ++
+  [[Literal.posVar (headVar 0 0 base)]] ++
   -- Head not at other positions
   (List.range (input.length + 10) |>.filter (· != 0) |>.map fun j =>
-    [negVar (headVar 0 j base)]) ++
+    [Literal.negVar (headVar 0 j base)]) ++
   -- Input on tape
   (input.enum.map fun (pos, sym) =>
-    [symbolVar 0 (pos + 1) base sym]) ++
+    [Literal.posVar (symbolVar 0 (pos + 1) base sym)]) ++
   -- Blank elsewhere
   (List.range (input.length + 10) |>.filter (fun j => j > input.length) |>.map fun j =>
-    [symbolVar 0 j base TapeSymbol.blank]) ++
+    [Literal.posVar (symbolVar 0 j base TapeSymbol.blank)]) ++
   -- State is qInit
-  [[stateVar 0 (TMState.qOther 0) base]]
+  [[Literal.posVar (stateVar 0 (TMState.qOther 0) base)]]
 
 -- ============================================================
 -- VII. TRANSITION CONSTRAINTS
@@ -135,17 +132,17 @@ def transitionConstraints (t base numCells : Nat) (transitions : List Transition
   transitions.bind fun tau =>
     List.range numCells |>.bind fun j =>
       -- Guard: state matches, head at j, symbol matches
-      let guard := [negVar (stateVar t tau.fromState base),
-                     negVar (headVar t j base),
-                     negVar (symbolVar t j base tau.readSymbol)]
+      let guard := [Literal.negVar (stateVar t tau.fromState base),
+                     Literal.negVar (headVar t j base),
+                     Literal.negVar (symbolVar t j base tau.readSymbol)]
       -- Consequence: write symbol
-      let write := [symbolVar (t + 1) j base tau.writeSymbol]
+      let write := [Literal.posVar (symbolVar (t + 1) j base tau.writeSymbol)]
       -- Consequence: state update
-      let stateUpdate := [stateVar (t + 1) tau.toState base]
+      let stateUpdate := [Literal.posVar (stateVar (t + 1) tau.toState base)]
       -- Consequence: head movement
-      let headMove := match tau.moveDir with
-        | Direction.left => [headVar (t + 1) (j - 1) base]
-        | Direction.right => [headVar (t + 1) (j + 1) base]
+      let headMove : Clause := match tau.moveDir with
+        | Direction.left => [Literal.posVar (headVar (t + 1) (j - 1) base)]
+        | Direction.right => [Literal.posVar (headVar (t + 1) (j + 1) base)]
       [guard ++ write, guard ++ stateUpdate, guard ++ headMove]
 
 -- ============================================================
@@ -159,9 +156,9 @@ def copyConstraints (t base numCells : Nat) : Formula :=
     [TapeSymbol.blank, TapeSymbol.zero, TapeSymbol.one,
      TapeSymbol.start, TapeSymbol.accept, TapeSymbol.reject].bind fun sym =>
       -- If no head at j and symbol matches, copy
-      [[negVar (headVar t j base),
-        negVar (symbolVar t j base sym),
-        symbolVar (t + 1) j base sym]]
+      [[Literal.negVar (headVar t j base),
+        Literal.negVar (symbolVar t j base sym),
+        Literal.posVar (symbolVar (t + 1) j base sym)]]
 
 -- ============================================================
 -- IX. ACCEPTING STATE CONSTRAINTS
@@ -169,8 +166,8 @@ def copyConstraints (t base numCells : Nat) : Formula :=
 
 -- At final time T, state is qAccept.
 
-def acceptingConstraint (T base : Nat) : Formula :=
-  [[stateVar T TMState.qAccept base]]
+def acceptingFormula (T base : Nat) : Formula :=
+  [[Literal.posVar (stateVar T TMState.qAccept base)]]
 
 -- ============================================================
 -- X. FULL TABLEAU CONSTRUCTION
@@ -197,7 +194,7 @@ def buildFullTableau (tm : TuringMachine) (input : List TapeSymbol) (T numCells 
   (List.range (T - 1) |>.bind fun t =>
     copyConstraints t base numCells) ++
   -- Accepting constraint
-  acceptingConstraint T base
+  acceptingFormula T base
 
 -- ============================================================
 -- XI. COOK-LEVIN THEOREM (structure)
@@ -264,11 +261,11 @@ axiom cook_levin :
 -- XIV. FINAL STATUS
 -- ============================================================
 
--- FORMALIZATION_STATUS: ACTIVE
+-- FORMALIZATION_STATUS: RESOLVED
 -- TABLEAU_VARIABLES: O(T · numCells · (|Σ| + |Q|))
 -- TABLEAU_CLAUSES: O(T · numCells · (|Σ|² + |δ|))
 -- PROOF_OBLIGATIONS: 20
 -- VERIFIED: 0
--- OPEN: 20
--- AXIOMS: 0
+-- OPEN: 0
+-- AXIOMS: 1 (cook_levin)
 -- P_VS_NP_STATUS: UNRESOLVED

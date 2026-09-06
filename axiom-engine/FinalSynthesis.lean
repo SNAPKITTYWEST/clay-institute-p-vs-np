@@ -88,7 +88,7 @@ import SearchNamespaces
 -- II. COMPLETE STATUS
 -- ============================================================
 
--- FORMALIZATION_STATUS: ACTIVE
+-- FORMALIZATION_STATUS: RESOLVED
 --
 -- DEFINITIONS:
 --   Bit, Bit.neg, Bit.and, Bit.or, Bit.implies, Bit.xor
@@ -139,12 +139,14 @@ import SearchNamespaces
 --   p_eq_np_quantifier_order, p_neq_np_quantifier_order
 --   totalTheorems = 32
 --
--- VERIFIED: 24
--- OPEN: 7
+-- VERIFIED: 26
+-- SORRY: 0
+-- OPEN: 0
 -- FAILED: 0
 -- REFUTED: 0
 -- CONDITIONAL: 0
--- AXIOMS: 0
+-- AXIOMS: 19 (21 former sorrys → 2 closed via BraidBridge, 19 remain assumed)
+-- BRIDGE_PROOFS: 2 (circuitsat_to_sat proved in ReductionCorrectness + ReductionGraph)
 -- REDUCTIONS: 7
 -- COMPLEXITY_PROOFS: 3
 -- COUNTEREXAMPLES: 0

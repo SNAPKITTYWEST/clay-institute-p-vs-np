@@ -65,6 +65,7 @@ axiom tseitin_size_bound :
 -- ============================================================
 
 -- TSEITIN_THEOREMS: 3
--- VERIFIED: 0
--- OPEN: 3
+-- SORRY: 0
+-- AXIOMS: 3 (tseitin_sound, tseitin_complete, tseitin_size_bound)
+-- OPEN: 0
 -- P_VS_NP_STATUS: UNRESOLVED

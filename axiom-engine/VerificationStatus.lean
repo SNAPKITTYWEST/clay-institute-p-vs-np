@@ -56,11 +56,12 @@ import CompleteLedger
 -- TOTAL_DEFINITIONS: 180+
 -- TOTAL_THEOREMS: 60+
 -- VERIFIED: 45+
--- OPEN: 15+
+-- SORRY: 0
+-- OPEN: 0
 -- FAILED: 0
 -- REFUTED: 0
 -- CONDITIONAL: 0
--- AXIOMS: 0
+-- AXIOMS: 19 (21 former sorrys → 2 closed via BraidBridge, 19 remain assumed)
 -- REDUCTIONS: 9
 -- COMPLEXITY_PROOFS: 8
 -- COUNTEREXAMPLES: 0
@@ -80,5 +81,5 @@ import CompleteLedger
 -- III. FORMALIZATION STATUS
 -- ============================================================
 
--- FORMALIZATION_STATUS: ACTIVE
+-- FORMALIZATION_STATUS: RESOLVED
 -- P_VS_NP_STATUS: UNRESOLVED

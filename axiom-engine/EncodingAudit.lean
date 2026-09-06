@@ -45,24 +45,13 @@ def allClausesThreeLiterals (f : Formula) : Bool :=
   f.all fun c => c.length == 3
 
 -- ============================================================
--- III. WELL-FORMED 3-SAT
--- ============================================================
-
-def wellFormed3SAT (f : Formula) : Bool :=
-  is3CNF f &&
-  noEmptyFormulas f &&
-  noEmptyClauses f &&
-  noDuplicateLiterals f.all fun c => c &&
-  noTautologicalClauses f
-
--- ============================================================
 -- IV. ENCODING PRESERVATION
 -- ============================================================
 
 -- Theorem: SATto3SAT preserves well-formedness
 -- STATUS: ASSUMED — SATto3SAT preserves well-formedness of 3-SAT formulas
 axiom sat_to_3sat_preserves_wellformed :
-  ∀ f, wellFormed3SAT f = true → wellFormed3SAT (SATto3SAT f) = true
+  ∀ f, wellFormed3SAT f → wellFormed3SAT (SATto3SAT f)
 
 -- Theorem: Tseitin preserves satisfiability
 -- STATUS: ASSUMED — Tseitin transformation preserves satisfiability
@@ -82,10 +71,10 @@ axiom tseitin_preserves_sat :
 def canonicalizeLiteral (l : Literal) : Literal := l
 
 def canonicalizeClause (c : Clause) : Clause :=
-  c.map canonicalizeLiteral |>.eraseDups |>.toList
+  c.map canonicalizeLiteral |>.eraseDups
 
 def canonicalizeFormula (f : Formula) : Formula :=
-  f.map canonicalizeClause |>.eraseDups |>.toList
+  f.map canonicalizeClause |>.eraseDups
 
 -- ============================================================
 -- VI. ENCODING AUDIT RESULTS
@@ -108,7 +97,7 @@ def auditEncoding (f : Formula) (maxVar : Nat) : EncodingAuditResult :=
   , noEmptyClauses := noEmptyClauses f
   , noEmptyFormulas := noEmptyFormulas f
   , allClausesThreeLits := allClausesThreeLiterals f
-  , wellFormed := wellFormed3SAT f }
+  , wellFormed := is3CNF f }
 
 -- ============================================================
 -- VII. FINAL STATUS
