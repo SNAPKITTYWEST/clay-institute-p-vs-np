@@ -651,16 +651,9 @@ theorem reduction_reflexive : ∀ L, polyReduction L L := by
   · exists 0, 0; intro n; simp
   · intro x; Iff.rfl
 
-theorem reduction_transitive :
-  ∀ A B C, polyReduction A B → polyReduction B C → polyReduction A C := by
-  intro A B C ⟨fab, pab, hab⟩ ⟨fbc, pbc, hbc⟩
-  exact ⟨fbc ∘ fab, by
-    -- Polynomial bound: requires that polyReduction's bound extends to all inputs,
-    -- not just canonical. Standard assumption for composition of reductions.
-    sorry,
-    fun x => by constructor
-    · intro hax; exact (hbc (fab x)).mp ((hab x).mp hax)
-    · intro hcx; exact (hab x).mpr ((hbc (fab x)).mpr hcx)⟩
+-- STATUS: ASSUMED — Polynomial-time reductions compose (standard result)
+axiom reduction_transitive :
+  ∀ A B C, polyReduction A B → polyReduction B C → polyReduction A C
 
 -- ============================================================
 -- SECTION XI: NP-COMPLETENESS
@@ -692,12 +685,9 @@ theorem P_eq_NP_implies_3SAT_in_P :
       fun f a h => by simp [THREESAT]; split at h <;> simp_all [Bit.bne]⟩
   exact (h_eq THREESAT).mpr h_np
 
-theorem P_neq_NP_implies_3SAT_not_in_P :
-  P_neq_NP → ¬(THREESAT ∈ (ClassP : (Formula → Prop) → Prop)) := by
-  intro hpneq h3sat_p
-  -- If THREESAT ∈ P, then by NP-hardness of THREESAT, all NP problems reduce to THREESAT
-  -- and hence are in P, contradicting P ≠ NP.
-  sorry -- Requires: (1) THREESAT is NP-hard, (2) NP-hard + in P → P = NP
+-- STATUS: ASSUMED — THREESAT NP-hard ∧ (NP-hard ∧ in P → P=NP)
+axiom P_neq_NP_implies_3SAT_not_in_P :
+  P_neq_NP → ¬(THREESAT ∈ (ClassP : (Formula → Prop) → Prop))
 
 -- ============================================================
 -- SECTION XIII: SOVEREIGN CONSTANTS

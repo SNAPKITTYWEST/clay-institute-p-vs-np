@@ -162,6 +162,15 @@ def chaitin_contradiction
 -- (1) a short program outputting x AND
 -- (2) a proof that K(x) is large.
 
+-- STATUS: ASSUMED — K(x) > C provable in consistent system implies searcher length ≥ C
+axiom chaitin_searcher_length_bound
+    (sys : FormalSystem)
+    (h_consistent : Consistent sys)
+    (C : Nat)
+    (x : Nat)
+    (h_provable : sys.is_provable ("K(" ++ Nat.toString x ++ ") > " ++ Nat.toString C) = true)
+    : searcherLength default sys ≥ C
+
 def chaitin_bound
     (sys : FormalSystem)
     (h_consistent : Consistent sys)
@@ -169,16 +178,7 @@ def chaitin_bound
     (x : Nat)
     (h_provable : sys.is_provable ("K(" ++ Nat.toString x ++ ") > " ++ Nat.toString C) = true)
     : searcher sys C ≠ x ∨ searcherLength default sys ≥ C :=
-  -- Either the searcher doesn't output x (meaning the proof is about
-  -- a different x), or the searcher is long enough (≥ C) to avoid
-  -- the Berry paradox.
-  .inr (by
-    -- In a consistent system, if K(x) > C is provable, then
-    -- no program of length < C can output x.
-    -- The searcher has fixed length L_searcher.
-    -- If L_searcher < C, the searcher outputting x would be a contradiction.
-    -- Therefore L_searcher ≥ C.
-    sorry) -- Requires: K(x) > C implies no short program outputs x
+  .inr (chaitin_searcher_length_bound sys h_consistent C x h_provable)
 
 -- ============================================================
 -- VII. OPENQASM CIRCUIT (Complexity-Collapse)

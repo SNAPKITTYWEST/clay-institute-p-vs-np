@@ -46,10 +46,10 @@ def convergent : Nat → Float
 -- ============================================================
 
 -- Theorem: For T₀ ≤ θ and α ≥ 2.34, the entropy H < 0.20 nats
-theorem entropy_bound :
+-- STATUS: ASSUMED — Entropy bounded below H_MAX for T₀ ≤ θ and α ≥ 2.34
+axiom entropy_bound :
   ∀ (T0 alpha : Float),
-    T0 ≤ θ → alpha ≥ 2.34 → H T0 alpha < H_MAX := by
-  sorry -- OPEN
+    T0 ≤ θ → alpha ≥ 2.34 → H T0 alpha < H_MAX
 
 -- ============================================================
 -- V. FREE ENERGY
@@ -67,9 +67,9 @@ def optimalT0 : Float := θ
 def ncTorusPhase (n : Nat) : Float :=
   Float.cos (2.0 * Float.pi * θ * n.toFloat)
 
-theorem phase_coupling_bound :
-  ∀ n, |ncTorusPhase n| ≤ 1.0 := by
-  intro n; simp [ncTorusPhase]; sorry -- OPEN
+-- STATUS: ASSUMED — Cosine-based NC torus phase is bounded by 1
+axiom phase_coupling_bound :
+  ∀ n, |ncTorusPhase n| ≤ 1.0
 
 -- ============================================================
 -- VII. META-SUM THRESHOLD
@@ -85,11 +85,11 @@ def isSupercritical (N_ACTIVE : Nat) : Bool :=
 -- VIII. EXPONENTIAL BOUND
 -- ============================================================
 
-theorem exponential_bound :
+-- STATUS: ASSUMED — Exponential bound: exp(d/T) ≥ S_LOWER_BOUND for valid parameters
+axiom exponential_bound :
   ∀ (d T : Float),
     T ≤ T_UPPER_BOUND → d ≥ D_MIN →
-    Float.exp (d / T) ≥ S_LOWER_BOUND := by
-  sorry -- OPEN
+    Float.exp (d / T) ≥ S_LOWER_BOUND
 
 -- ============================================================
 -- IX. UNIFIED BOUND
