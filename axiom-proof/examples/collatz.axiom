@@ -1,0 +1,57 @@
+-- AXIOM: Collatz Conjecture Formalization
+-- The 3n+1 problem stated as a theorem
+
+-- Import natural numbers
+-- (In full system: import stdlib.nat)
+
+-- Even/Odd predicates
+inductive Even : Nat → Type where
+  | even_zero : Even zero
+  | even_succ : ∀ (n : Nat), Even n → Even (succ (succ n))
+
+inductive Odd : Nat → Type where
+  | odd_one : Odd (succ zero)
+  | odd_succ : ∀ (n : Nat), Odd n → Odd (succ (succ n))
+
+-- Division by 2 (for even numbers)
+def div2 : Nat → Nat
+  | div2 zero := zero
+  | div2 (succ zero) := zero
+  | div2 (succ (succ n)) := succ (div2 n)
+
+-- The Collatz step function
+def collatz_step : Nat → Nat
+  | collatz_step n :=
+    if even n then div2 n else succ (add (mul 3 n) n)
+
+-- "Eventually reaches 1" predicate
+inductive EventuallyOne : Nat → Type where
+  | is_one : EventuallyOne (succ zero)
+  | step : ∀ (n : Nat), EventuallyOne (collatz_step n) → EventuallyOne n
+
+-- The Collatz Conjecture
+theorem collatz_conjecture : ∀ (n : Nat), n ≠ zero → EventuallyOne n :=
+  sorry  -- The proof is left as an exercise for the reader
+         -- (This is one of the hardest open problems in mathematics)
+
+-- Helper: even check (simplified)
+def even : Nat → Bool
+  | even zero := True
+  | even (succ zero) := False
+  | even (succ (succ n)) := even n
+
+-- Verified small cases
+theorem collatz_1 : EventuallyOne (succ zero) :=
+  EventuallyOne.is_one
+
+theorem collatz_2 : EventuallyOne (succ (succ zero)) :=
+  EventuallyOne.step (succ zero) EventuallyOne.is_one
+
+theorem collatz_3 : EventuallyOne (succ (succ (succ zero))) :=
+  sorry  -- Requires computing the trajectory: 3 → 10 → 5 → 16 → 8 → 4 → 2 → 1
+
+-- Multi-agent proof search annotation
+-- TENSOR: explore proof space for general n
+-- LEDGE: verify each proof step in kernel
+-- AXIOM: seal completed proofs to WORM ledger
+-- ATLAS: coordinate search strategy

@@ -1,0 +1,76 @@
+-- AXIOM: Circuit Complexity Formalization
+-- Circuit lower bounds and complexity measures
+
+-- Boolean circuit
+def Circuit : Type :=
+  -- Directed acyclic graph with labeled gates
+  { gates : List Gate // acyclic gates }
+
+-- Gate types
+inductive Gate : Type where
+  | Input : Nat → Gate           -- Input variable
+  | And : Nat → Nat → Gate       -- AND of two gates
+  | Or : Nat → Nat → Gate        -- OR of two gates
+  | Not : Nat → Gate             -- NOT of gate
+  | Xor : Nat → Nat → Gate       -- XOR of two gates
+
+-- Circuit evaluation
+def eval_circuit (C : Circuit) (input : List Bool) : Bool :=
+  -- Evaluate gates in topological order
+  sorry
+
+-- Circuit size: number of gates
+def circuit_size (C : Circuit) : Nat :=
+  length C.gates
+
+-- Circuit depth: longest path from input to output
+def circuit_depth (C : Circuit) : Nat :=
+  max { depth g | g ∈ C.gates }
+
+-- Boolean function computed by circuit
+def computes (C : Circuit) (f : List Bool → Bool) : Prop :=
+  ∀ input, eval_circuit C input = f input
+
+-- Parity function
+def parity (n : Nat) : List Bool → Bool :=
+  fun bits => foldl xor false bits
+
+-- Theorem: Parity requires exponential size circuits
+theorem parity_lower_bound (n : Nat) :
+  ∀ C : Circuit, computes C (parity n) →
+  circuit_size C ≥ 2^(n/10) :=
+  sorry  -- Major result in circuit complexity
+
+-- Majority function
+def majority (n : Nat) : List Bool → Bool :=
+  fun bits => count_ones bits > n / 2
+
+-- Theorem: Majority is in AC⁰ (constant depth, polynomial size)
+theorem majority_in_ac0 (n : Nat) :
+  ∃ C : Circuit, 
+    computes C (majority n) ∧
+    circuit_depth C = O(1) ∧
+    circuit_size C = poly n :=
+  sorry
+
+-- AC⁰ circuits: constant depth, polynomial size
+def AC0 : Set (List Bool → Bool) :=
+  { f | ∃ C : Circuit, computes C f ∧ 
+    ∃ d, circuit_depth C = d ∧
+    circuit_size C = poly (length input) }
+
+-- Theorem: Parity is not in AC⁰ (Furst-Saxe-Sipser, Håstad)
+theorem parity_not_in_ac0 :
+  parity ∉ AC0 :=
+  sorry  -- Håstad's switching lemma
+
+-- Circuit complexity classes
+def P_poly : Set (List Bool → Bool) :=
+  { f | ∃ family : Nat → Circuit,
+    ∀ n, computes (family n) (f restricted to n bits) ∧
+    circuit_size (family n) = poly n }
+
+-- Open problem: Is NP ⊆ P/poly?
+theorem np_in_ppoly :
+  NP ⊆ P_poly ∨ NP ⊄ P_poly :=
+  sorry  -- Major open problem (implies PH collapse if true)

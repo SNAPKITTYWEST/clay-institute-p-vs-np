@@ -1,0 +1,54 @@
+-- AXIOM Standard Library: Propositional Logic
+-- Core logical connectives and rules
+
+-- Truth
+inductive True : Type where
+  | intro : True
+
+-- Falsity (empty type)
+inductive False : Type where
+
+-- Conjunction (AND)
+inductive And (A B : Type) : Type where
+  | intro : A → B → And A B
+
+-- Disjunction (OR)
+inductive Or (A B : Type) : Type where
+  | inl : A → Or A B
+  | inr : B → Or A B
+
+-- Implication is just function type: A → B
+
+-- Negation
+def Not (A : Type) : Type := A → False
+
+-- Biconditional
+def Iff (A B : Type) : Type := And (A → B) (B → A)
+
+-- Theorem: A → A (identity)
+theorem id : ∀ (A : Type), A → A :=
+  λ A. λ a. a
+
+-- Theorem: A → B → A (weakening)
+theorem weaken : ∀ (A B : Type), A → B → A :=
+  λ A. λ B. λ a. λ b. a
+
+-- Theorem: (A → B → C) → (A → B) → A → C
+theorem S : ∀ (A B C : Type), (A → B → C) → (A → B) → A → C :=
+  λ A. λ B. λ C. λ f. λ g. λ a. f a (g a)
+
+-- Theorem: (A → B → C) → (B → A → C) (flip)
+theorem flip : ∀ (A B C : Type), (A → B → C) → B → A → C :=
+  λ A. λ B. λ C. λ f. λ b. λ a. f a b
+
+-- Theorem: False → A (ex falso)
+theorem ex_falso : ∀ (A : Type), False → A :=
+  sorry  -- Requires elimination principle for False
+
+-- Theorem: A → Not (Not A) (double negation introduction)
+theorem not_not_intro : ∀ (A : Type), A → Not (Not A) :=
+  λ A. λ a. λ na. na a
+
+-- Theorem: (A → B) → (Not B → Not A) (contrapositive)
+theorem contrapositive : ∀ (A B : Type), (A → B) → Not B → Not A :=
+  λ A. λ B. λ f. λ nb. λ a. nb (f a)

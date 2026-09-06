@@ -1,0 +1,121 @@
+-- AXIOM Standard Library: Computational Complexity
+-- Formalization of P vs NP problem
+
+-- Import natural numbers
+-- (In full system: import stdlib.nat)
+
+-- Boolean type
+inductive Bool : Type where
+  | true : Bool
+  | false : Bool
+
+-- Boolean operations
+def and : Bool → Bool → Bool
+  | and true b := b
+  | and false b := false
+
+def or : Bool → Bool → Bool
+  | or true b := true
+  | or false b := b
+
+def not : Bool → Bool
+  | not true := false
+  | not false := true
+
+-- Finite sets (for alphabets, states)
+inductive Fin : Nat → Type where
+  | fzero : ∀ (n : Nat), Fin (succ n)
+  | fsucc : ∀ (n : Nat), Fin n → Fin (succ n)
+
+-- Tape alphabet (finite)
+def TapeAlphabet : Type := Fin 2  -- {0, 1} for binary
+
+-- States (finite set)
+def States : Nat → Type := Fin
+
+-- Transition function
+def Transition (n : Nat) : Type :=
+  States n → TapeAlphabet → States n × TapeAlphabet × Bool  -- (state, symbol, direction)
+
+-- Turing Machine
+inductive TuringMachine : Type where
+  | mk : (n : Nat) → States n → States n → States n → Transition n → TuringMachine
+  -- (num_states, start_state, accept_state, reject_state, transition_fn)
+
+-- Configuration: current state + tape contents + head position
+inductive Config : Type where
+  | mk : (state : Nat) → (tape : List Bool) → (head : Nat) → Config
+
+-- Step relation: one computation step
+def step : TuringMachine → Config → Config :=
+  sorry  -- Apply transition function to current configuration
+
+-- Computation relation: multiple steps
+def computes : TuringMachine → Config → Config → Nat → Type :=
+  sorry  -- Reflexive-transitive closure of step relation
+
+-- Runtime: number of steps to halt
+def runtime : TuringMachine → List Bool → Nat :=
+  sorry  -- Count steps until accept/reject
+
+-- Polynomial time: exists k such that runtime ≤ n^k
+def PolynomialTime (M : TuringMachine) : Type :=
+  Σ (k : Nat), ∀ (n : Nat), ∀ (input : List Bool),
+    length Bool input = n → runtime M input ≤ n^k
+
+-- Decision problem
+def Problem : Type := List Bool → Bool
+
+-- TM solves a problem
+def Solves (M : TuringMachine) (P : Problem) : Type :=
+  ∀ (input : List Bool), 
+    (halts M input) ∧ (output M input = P input)
+
+-- P: Problems solvable in polynomial time
+def P : Type :=
+  Σ (M : TuringMachine), Σ (P : Problem),
+    PolynomialTime M × Solves M P
+
+-- NTM: Nondeterministic Turing Machine
+inductive NTuringMachine : Type where
+  | mk : (n : Nat) → States n → States n → States n → 
+         (Transition n → List (Transition n)) → NTuringMachine
+  -- Nondeterministic transition: can branch
+
+-- NP: Problems verifiable in polynomial time
+def NP : Type :=
+  Σ (P : Problem), 
+    Σ (V : TuringMachine), Σ (c : Nat),
+      PolynomialTime V ×
+      (∀ (input : List Bool),
+        P input = true ↔ 
+        ∃ (certificate : List Bool),
+          length Bool certificate ≤ (length Bool input)^c ∧
+          Solves V (λ input. V (append Bool input certificate)))
+
+-- P ⊆ NP (every P problem is in NP)
+theorem P_subset_NP : ∀ (p : P), ∃ (n : NP), True :=
+  sorry  -- Trivial: polynomial-time solver is its own verifier
+
+-- The P vs NP Conjecture
+theorem P_vs_NP : P = NP ∨ P ≠ NP :=
+  sorry  -- The $1 million question
+
+-- NP-Complete: hardest problems in NP
+def NPComplete (P : Problem) : Type :=
+  (∃ (n : NP), n.1 = P) ×  -- P is in NP
+  (∀ (Q : Problem),         -- Every NP problem reduces to P
+    (∃ (n : NP), n.1 = Q) →
+    ∃ (reduction : List Bool → List Bool),
+      PolynomialTime reduction ∧
+      ∀ (input : List Bool), Q input = P (reduction input))
+
+-- Cook-Levin Theorem: SAT is NP-complete
+-- (This is proven in real mathematics)
+theorem SAT_is_NP_complete : NPComplete SAT :=
+  sorry  -- Requires formalizing SAT and the reduction
+
+-- If any NP-complete problem is in P, then P = NP
+theorem NP_complete_in_P : 
+  ∀ (P : Problem), NPComplete P → (∃ (p : P), p.2.1 = P) → P = NP :=
+  sorry  -- Follows from NP-completeness definition

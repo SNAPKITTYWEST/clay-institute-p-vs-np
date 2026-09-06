@@ -1,0 +1,112 @@
+-- AXIOM: Boolean Satisfiability (SAT) Formalization
+-- The canonical NP-complete problem
+
+-- Import from complexity.axiom
+-- (In full system: import stdlib.complexity)
+
+-- Literal: variable or its negation
+inductive Literal : Type where
+  | pos : Nat → Literal  -- x_i
+  | neg : Nat → Literal  -- ¬x_i
+
+-- Clause: disjunction of literals
+def Clause : Type := List Literal
+
+-- CNF Formula: conjunction of clauses
+def CNF : Type := List Clause
+
+-- Assignment: maps variables to truth values
+def Assignment : Type := Nat → Bool
+
+-- Evaluate literal under assignment
+def eval_literal : Assignment → Literal → Bool
+  | eval_literal α (pos i) := α i
+  | eval_literal α (neg i) := α (not i)
+
+-- Evaluate clause under assignment (OR of literals)
+def eval_clause : Assignment → Clause → Bool
+  | eval_clause α nil := false
+  | eval_clause α (cons l ls) := or (eval_literal α l) (eval_clause α ls)
+
+-- Evaluate CNF formula under assignment (AND of clauses)
+def eval_cnf : Assignment → CNF → Bool
+  | eval_cnf α nil := true
+  | eval_cnf α (cons c cs) := and (eval_clause α c) (eval_cnf α cs)
+
+-- SAT problem: does there exist a satisfying assignment?
+def SAT (φ : CNF) : Bool :=
+  ∃ (α : Assignment), eval_cnf α φ = true
+
+-- SAT is in NP: given assignment, verify in polynomial time
+theorem SAT_in_NP : ∀ (φ : CNF), 
+  ∃ (V : TuringMachine), 
+    PolynomialTime V ∧
+    (∀ (α : Assignment), 
+      eval_cnf α φ = true → 
+      runtime V (encode_assignment α) ≤ (size φ)^2) :=
+  sorry  -- Verification is linear in formula size
+
+-- SAT is NP-hard (Cook-Levin theorem)
+-- Every NP problem reduces to SAT
+theorem SAT_NP_hard : ∀ (P : Problem),
+  (∃ (n : NP), n.1 = P) →
+  ∃ (reduction : List Bool → CNF),
+    PolynomialTime reduction ∧
+    ∀ (input : List Bool), P input = SAT (reduction input) :=
+  sorry  -- Cook-Levin: simulate TM computation as SAT formula
+
+-- SAT is NP-complete
+theorem SAT_NP_complete : NPComplete SAT :=
+  (SAT_in_NP, SAT_NP_hard)
+
+-- 3-SAT: each clause has exactly 3 literals
+def is_3_clause : Clause → Bool
+  | is_3_clause c := length Literal c = 3
+
+def is_3_cnf : CNF → Bool
+  | is_3_cnf nil := true
+  | is_3_cnf (cons c cs) := and (is_3_clause c) (is_3_cnf cs)
+
+def ThreeSAT : Type := { φ : CNF // is_3_cnf φ }
+
+-- 3-SAT is also NP-complete
+theorem ThreeSAT_NP_complete : NPComplete ThreeSAT :=
+  sorry  -- Reduction from SAT to 3-SAT
+
+-- Example: simple satisfiable formula
+-- (x₁ ∨ x₂) ∧ (¬x₁ ∨ x₃)
+def example_sat : CNF :=
+  cons (cons (pos 0) (cons (pos 1) nil))
+       (cons (cons (neg 0) (cons (pos 2) nil)) nil)
+
+-- Witness: x₁ = false, x₂ = true, x₃ = true
+def example_assignment : Assignment :=
+  λ i. match i with
+       | 0 => false
+       | 1 => true
+       | 2 => true
+       | _ => false
+
+-- Verify the assignment satisfies the formula
+theorem example_satisfied : eval_cnf example_assignment example_sat = true :=
+  sorry  -- Compute: (F ∨ T) ∧ (T ∨ T) = T ∧ T = T
+
+-- Example: unsatisfiable formula
+-- (x₁) ∧ (¬x₁)
+def unsat_formula : CNF :=
+  cons (cons (pos 0) nil)
+       (cons (cons (neg 0) nil) nil)
+
+theorem unsat_unsatisfiable : SAT unsat_formula = false :=
+  sorry  -- No assignment can satisfy both x₁ and ¬x₁
+
+-- P vs NP via SAT
+-- If SAT ∈ P, then P = NP
+theorem SAT_in_P_implies_P_eq_NP :
+  (∃ (p : P), p.2.1 = SAT) → P = NP :=
+  sorry  -- Immediate from SAT being NP-complete
+
+-- The million-dollar question
+theorem P_vs_NP_via_SAT :
+  (∃ (M : TuringMachine), PolynomialTime M ∧ Solves M SAT) → P = NP :=
+  sorry  -- If we can solve SAT in poly time, P = NP

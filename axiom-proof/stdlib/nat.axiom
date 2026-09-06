@@ -1,0 +1,41 @@
+-- AXIOM Standard Library: Natural Numbers
+-- Peano axioms with dependent types
+
+inductive Nat : Type where
+  | zero : Nat
+  | succ : Nat → Nat
+
+-- Addition
+def add : Nat → Nat → Nat
+  | add zero m := m
+  | add (succ n) m := succ (add n m)
+
+-- Multiplication
+def mul : Nat → Nat → Nat
+  | mul zero m := zero
+  | mul (succ n) m := add m (mul n m)
+
+-- Predecessor
+def pred : Nat → Nat
+  | pred zero := zero
+  | pred (succ n) := n
+
+-- Theorem: n + 0 = n (requires induction)
+theorem add_zero : ∀ (n : Nat), add n zero = n :=
+  sorry  -- Proof by induction on n
+
+-- Theorem: n + succ(m) = succ(n + m)
+theorem add_succ : ∀ (n m : Nat), add n (succ m) = succ (add n m) :=
+  sorry  -- Proof by induction on n
+
+-- Theorem: 0 + n = n
+theorem zero_add : ∀ (n : Nat), add zero n = n :=
+  sorry  -- Trivial by definition
+
+-- Theorem: commutativity of addition
+theorem add_comm : ∀ (n m : Nat), add n m = add m n :=
+  sorry  -- Requires auxiliary lemmas
+
+-- Theorem: associativity of addition
+theorem add_assoc : ∀ (n m k : Nat), add (add n m) k = add n (add m k) :=
+  sorry  -- Proof by induction

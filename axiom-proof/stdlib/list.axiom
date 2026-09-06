@@ -1,0 +1,54 @@
+-- AXIOM Standard Library: Lists
+-- Polymorphic list type with operations
+
+inductive List (A : Type) : Type where
+  | nil : List A
+  | cons : A → List A → List A
+
+-- List length
+def length : ∀ (A : Type), List A → Nat
+  | length A nil := zero
+  | length A (cons x xs) := succ (length A xs)
+
+-- List append
+def append : ∀ (A : Type), List A → List A → List A
+  | append A nil ys := ys
+  | append A (cons x xs) ys := cons x (append A xs ys)
+
+-- List map
+def map : ∀ (A B : Type), (A → B) → List A → List B
+  | map A B f nil := nil
+  | map A B f (cons x xs) := cons (f x) (map A B f xs)
+
+-- List fold
+def foldr : ∀ (A B : Type), (A → B → B) → B → List A → B
+  | foldr A B f z nil := z
+  | foldr A B f z (cons x xs) := f x (foldr A B f z xs)
+
+-- List reverse (accumulator-based)
+def reverse : ∀ (A : Type), List A → List A
+  | reverse A xs := rev_acc A xs nil
+
+def rev_acc : ∀ (A : Type), List A → List A → List A
+  | rev_acc A nil acc := acc
+  | rev_acc A (cons x xs) acc := rev_acc A xs (cons x acc)
+
+-- Head (partial)
+def head : ∀ (A : Type), List A → A
+  | head A (cons x xs) := x
+  | head A nil := sorry  -- Undefined for empty list
+
+-- Tail
+def tail : ∀ (A : Type), List A → List A
+  | tail A (cons x xs) := xs
+  | tail A nil := nil
+
+-- Theorem: length of append
+theorem length_append : ∀ (A : Type) (xs ys : List A),
+  length A (append A xs ys) = add (length A xs) (length A ys) :=
+  sorry  -- Proof by induction on xs
+
+-- Theorem: reverse is involutive
+theorem reverse_reverse : ∀ (A : Type) (xs : List A),
+  append A (reverse A (reverse A xs)) nil = xs :=
+  sorry  -- Requires auxiliary lemmas
