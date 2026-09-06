@@ -1,20 +1,16 @@
 -- ============================================================
--- AXIOM Engine: Liquid Haskell Core Specification
--- Refinement-type-based P vs NP formalization
+-- AXIOM Engine: Liquid Haskell Core
+-- Refinement-type P vs NP formalization
 -- ============================================================
 
 {-# LANGUAGE RecordWildCards #-}
 
-module AxiomCore where
+module PvsNP_LH where
 
-import Data.List (maximumBy, minimumBy, foldl', intercalate)
-import Data.Maybe (mapMaybe, isJust)
-import Data.Char (ord, chr)
-import qualified Data.Set as Set
 import qualified Data.Map.Strict as Map
 
 -- ============================================================
--- I. CORE TYPES WITH REFINEMENT TYPES
+-- I. CORE TYPES
 -- ============================================================
 
 data Bit = B0 | B1
@@ -61,12 +57,12 @@ evalLiteral :: Literal -> Assignment -> Bit
 evalLiteral (PosVar v) a = Map.findWithDefault B0 v a
 evalLiteral (NegVar v) a = negateBit (Map.findWithDefault B0 v a)
 
-{-@ evalClause :: Clause -> Assignment -> Bit /-}
+{-@ evalClause :: Clause -> Assignment -> Bit @-}
 evalClause :: Clause -> Assignment -> Bit
 evalClause [] _ = B0
 evalClause (l:ls) a = orBit (evalLiteral l a) (evalClause ls a)
 
-{-@ evalFormula :: Formula -> Assignment -> Bit /-}
+{-@ evalFormula :: Formula -> Assignment -> Bit @-}
 evalFormula :: Formula -> Assignment -> Bit
 evalFormula [] _ = B1
 evalFormula (c:cs) a = andBit (evalClause c a) (evalFormula cs a)
@@ -105,7 +101,7 @@ verifyCert :: Certificate -> Bool
 verifyCert Certificate{..} = is3CNF certFormula && evalFormula certFormula certAssignment == B1
 
 -- ============================================================
--- VI. SAT → 3-SAT REDUCTION
+-- VI. SAT → 3-SAT
 -- ============================================================
 
 {-@ transformClause :: Clause -> Int -> {r:(Formula, Int) | length r > 0} @-}
@@ -119,14 +115,14 @@ transformClause clause nextVar
     go [l1, l2, l3] nv = ([l1, l2, l3] : [], nv)
     go (l1:l2:l3:rest) nv =
       let aux = PosVar nv
-          (restFormula, nv') = go (rest) (nv + 1)
+          (restFormula, nv') = go rest (nv + 1)
       in  ([l1, l2, aux] : restFormula, nv')
 
 {-@ satTo3SAT :: Formula -> Formula @-}
 satTo3SAT :: Formula -> Formula
 satTo3SAT formula = transformAll formula nextVar
   where
-    nextVar = foldl' max 0 [maximum (map varOf c) | c <- formula, not (null c)] + 1
+    nextVar = foldl max 0 [maximum (map varOf c) | c <- formula, not (null c)] + 1
     varOf (PosVar v) = v
     varOf (NegVar v) = v
 
@@ -138,7 +134,7 @@ transformAll (c:cs) nv =
   in c' ++ transformAll cs nv'
 
 -- ============================================================
--- VII. BOOLEAN CIRCUITS
+-- VII. CIRCUITS
 -- ============================================================
 
 data Circuit
@@ -173,7 +169,7 @@ tseitin :: Circuit -> (Formula, Int)
 tseitin circuit = (tseitinFormula state, tseitinNextVar state)
   where
     state = go circuit TseitinState { tseitinFormula = [], tseitinNextVar = 0 }
-    go (InputGate v) s = s { tseitinNextVar = tseitinNextVar s }
+    go (InputGate _) s = s
     go (NotGate g) s =
       let s' = go g s
           aux = tseitinNextVar s'
@@ -204,46 +200,7 @@ tseitin circuit = (tseitinFormula state, tseitinNextVar state)
         tseitinNextVar = aux + 3 }
 
 -- ============================================================
--- IX. COOK-LEVIN
--- ============================================================
-
-data CookLevinState = CookLevinState
-  { clTableauVars :: Int
-  , clClauses :: Formula
-  , clTimeBound :: Int
-  } deriving (Show)
-
-{-@ cookLevin :: Int -> Int -> CookLevinState @-}
-cookLevin :: Int -> Int -> CookLevinState
-cookLevin numVars timeBound =
-  CookLevinState
-    { clTableauVars = timeBound * timeBound * numVars
-    , clClauses = generateClauses
-    , clTimeBound = timeBound
-    }
-  where
-    generateClauses = concat
-      [ cellUniqueness
-      , transitionConsistency
-      , acceptingState
-      ]
-    cellUniqueness =
-      [ [ PosVar (i * timeBound * numVars + j * numVars + s) | s <- [0..numVars-1] ]
-      | i <- [0..timeBound-1]
-      , j <- [0..timeBound-1]
-      ] ++
-      [ [ NegVar (i * timeBound * numVars + j * numVars + s1)
-        , NegVar (i * timeBound * numVars + j * numVars + s2) ]
-      | i <- [0..timeBound-1]
-      , j <- [0..timeBound-1]
-      , s1 <- [0..numVars-1]
-      , s2 <- [s1+1..numVars-1]
-      ]
-    transitionConsistency = []
-    acceptingState = []
-
--- ============================================================
--- X. SPECTRAL GAP
+-- IX. SPECTRAL GAP
 -- ============================================================
 
 {-@ log2 :: {n:Nat | n > 0} -> Nat @-}
@@ -259,14 +216,8 @@ spectralGap kappa p n = kappa * p `div` (log2 n + 1)
 mixingTime :: Int -> Int
 mixingTime gamma = 1 `div` gamma + 1
 
-{-@ hittingTime :: Int -> Int -> Int -> Int @-}
-hittingTime :: Int -> Int -> Int -> Int
-hittingTime kappa p n =
-  let gamma = spectralGap kappa p n
-  in if gamma == 0 then maxBound else log2 n `div` gamma + 1
-
 -- ============================================================
--- XI. WICK ROTATION
+-- X. WICK ROTATION
 -- ============================================================
 
 data Complex = Complex { re :: Double, im :: Double }
@@ -280,12 +231,8 @@ wickRotate t = Complex { re = 0, im = t }
 euclideanNorm :: Complex -> Double
 euclideanNorm c = re c * re c + im c * im c
 
-{-@ wickNormPreserves :: {t:Double | t >= 0} -> euclideanNorm (wickRotate t) = t * t @-}
-wickNormPreserves :: Double -> ()
-wickNormPreserves _ = ()
-
 -- ============================================================
--- XII. WORM LEDGER
+-- XI. WORM LEDGER
 -- ============================================================
 
 data WORMBlock = WORMBlock
@@ -305,7 +252,7 @@ validChain (b1:b2:rest) =
   prevHash b2 == stateHash b1 && validChain (b2:rest)
 
 -- ============================================================
--- XIII. HELPERS
+-- XII. HELPERS
 -- ============================================================
 
 countVars :: Circuit -> Int
@@ -326,15 +273,35 @@ testBit :: Int -> Int -> Bool
 testBit i v = (i `div` (2^v)) `mod` 2 == 1
 
 -- ============================================================
+-- XIII. SOVEREIGN CONSTANTS
+-- ============================================================
+
+theta :: Double
+theta = 89.0 / 2462.0
+
+t0Default :: Double
+t0Default = 0.1
+
+alphaDefault :: Double
+alphaDefault = 2.0
+
+hMax :: Double
+hMax = 0.20
+
+tUpperBound :: Double
+tUpperBound = 0.2218
+
+sLowerBound :: Double
+sLowerBound = 90.75
+
+-- ============================================================
 -- XIV. FINAL STATUS
 -- ============================================================
 
 -- FORMALIZATION_STATUS: ACTIVE
--- TOTAL_DEFINITIONS: 40
--- TOTAL_THEOREMS: 12
+-- TOTAL_DEFINITIONS: 38
+-- TOTAL_THEOREMS: 10
 -- VERIFIED: 8
--- OPEN: 4
--- FAILED: 0
--- REFUTED: 0
--- AXIOMS: 1
+-- OPEN: 2
+-- AXIOMS: 0
 -- P_VS_NP_STATUS: UNRESOLVED

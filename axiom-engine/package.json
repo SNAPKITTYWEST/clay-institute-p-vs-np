@@ -3,6 +3,5 @@
   "version": "0.1.0",
   "description": "AXIOM Engine: P vs NP Multi-Formalization",
   "authors": ["Ahmad Ali Parr", "Jessica Westerhoff"],
-  "license": "Proprietary",
-  "files": ["*.agda", "*.lean", "*.v", "*.thy", "*.sml", "*.hs", "*.ads", "*.adb", "*.rs", "*.toml"]
+  "license": "Proprietary"
 }
