@@ -1,0 +1,141 @@
+SOVEREIGN SOURCE LICENSE v1.0 — CLAY INSTITUTE COMPLIANT DUAL LICENSE
+Copyright (c) 2026 Ahmad Ali Parr + Jessica Westerhoff
+Bel Esprit d'Accord Trust — 50/50 equal sovereigns
+Repository: SNAPKITTYWEST/CLAY-INSTITUTE-P-VS-NP
+Fingerprint: SDC-Ω-∂-2026-PVSNP
+
+=========================================================================
+1. OWNERSHIP
+=========================================================================
+All source code, formal proofs, theorem statements, proof terms, mathematical
+structures, constants, algorithms, documentation, and OpenQASM circuits in
+this repository are the exclusive intellectual property of Ahmad Ali Parr
+and Jessica Westerhoff under the Bel Esprit d'Accord Trust. Protected under
+United States copyright law (17 U.S.C.) and international treaty provisions.
+
+=========================================================================
+2. CLAY MATHEMATICS INSTITUTE COMPLIANCE
+=========================================================================
+This repository is structured to satisfy the Clay Mathematics Institute
+Millennium Prize Rules (adopted by the Board of Directors 26 Sept 2018,
+https://www.claymath.org/millennium-problems/rules/ and
+https://www.claymath.org/wp-content/uploads/2022/03/millennium_prize_rules_0.pdf).
+The canonical official description for P vs NP is Cook (2000):
+https://www.claymath.org/wp-content/uploads/2022/06/pvsnp.pdf
+
+Per §4–§7 of the Rules, a Proposed Solution must satisfy ALL of:
+
+  (a) Published in a Qualifying Outlet — a refereed mathematics publication
+      of worldwide repute with: (i) named editorial board available for
+      contact; (ii) editor(s) capable of identifying appropriate referees;
+      (iii) published refereeing process ensuring review by appropriate
+      experts; (iv) inclusion in MathSciNet. The relaxed route under §6(f)
+      requires SAB recommendation and BOD approval. This repository alone
+      is NOT a Qualifying Outlet and will not be considered a submission
+      to CMI (§6.b, §7.a: no direct submission, no supplementary material).
+
+  (b) At least two (2) years elapsed since publication in the Qualifying
+      Outlet.
+
+  (c) General acceptance in the global mathematics community, as determined
+      in CMI's sole discretion (citations by independent researchers,
+      international conferences, awards, detailed scrutiny — Notes on the
+      Rules).
+
+  (d) Satisfactorily answered the questions in the official Problem
+      description, as determined by CMI. For P vs NP (§4.b), resolution
+      in EITHER direction (P=NP or P≠NP) is evaluated by the standard
+      procedure (§7): SAB constitutes a Special Advisory Committee
+      (≥1 SAB member + ≥2 non-SAB international experts), each component
+      verified by one or more members.
+
+  (e) No entitlement to explanation of CMI's decision (§8).
+
+Authors seeking Clay consideration must publish the mathematical content
+through a Qualifying Outlet independently. This license explicitly permits
+that path (see §3).
+
+=========================================================================
+3. DUAL LICENSING
+=========================================================================
+To simultaneously preserve sovereign ownership and enable Clay-qualifying
+publication and independent verification, this repository uses a dual license:
+
+  (A) MATHEMATICAL CONTENT — CC BY 4.0 + Apache 2.0 (Clay-Publication Track):
+      Applies to: theorem statements, definitions, lemmas, problem
+      descriptions, SharedFoundation/* (Spec.md, Alphabet.lean … ThreeSAT.lean,
+      CommonSemantics.lean, ARCHITECTURE.md), HybridQuantumSAT/Basic/*,
+      Bridge/* specifications, and any file bearing header "Licensed under
+      CC BY 4.0 for Clay publication." You are granted a worldwide,
+      royalty-free license to: reproduce, share, adapt, publish in a
+      refereed journal or other Qualifying Outlet, deposit in arXiv/MathSciNet-
+      indexed venues, cite, and verify — provided you give attribution:
+
+        © 2026 Ahmad Ali Parr + Jessica Westerhoff, Bel Esprit d'Accord Trust
+        Source: https://github.com/SNAPKITTYWEST/CLAY-INSTITUTE-P-VS-NP
+        Fingerprint: SDC-Ω-∂-2026-PVSNP
+
+      Attribution must appear in the publication and in any derivative
+      mathematical exposition. No endorsement claim is permitted.
+
+  (B) ENGINEERING IMPLEMENTATION — Sovereign Source License v1.0
+      (Sovereign-Track):
+      Applies to: execution infrastructure, orchestrators, cloud workers,
+      proprietary kernels, non-mathematical tooling, and any file bearing
+      header "Licensed under the SOVEREIGN SOURCE LICENSE v1.0".
+      What is permitted: viewing on GitHub, citing theorem names/statements
+      with attribution, submission to CMI via a Qualifying Outlet (which
+      necessarily exercises the (A) grant for the mathematical content).
+      What is forbidden without explicit written permission (jessicalw34@gmail.com):
+        - forking for any purpose other than viewing
+        - copying/extracting implementation code beyond fair-use citation
+        - incorporating proof terms/structure into other proof libraries or software
+        - commercial use, derivative works, distribution, ML training
+
+  If a file does not specify (A) or (B), (A) applies to its mathematical
+  content and (B) applies to its executable/engineering content.
+
+=========================================================================
+4. ATTRIBUTION AND CITATION
+=========================================================================
+Academic citation of theorem names/statements under (A) is permitted and
+encouraged. Example BibTeX:
+
+  @misc{ParrWesterhoff2026PvsNP,
+    title  = {Shared Foundation for P vs NP: Σ→Σ*→L→M→Run→T→P/NP→≤p→SAT→3SAT},
+    author = {Parr, Ahmad Ali and Westerhoff, Jessica},
+    year   = {2026},
+    howpublished = {\url{https://github.com/SNAPKITTYWEST/CLAY-INSTITUTE-P-VS-NP}},
+    note   = {Fingerprint SDC-Ω-∂-2026-PVSNP; CC BY 4.0 for mathematical content}
+  }
+
+Forking on GitHub does not grant license beyond viewing (§3.B). The
+mathematical fingerprint in SovereignFingerprint.lean (F(53)%107=8, π(108)=72,
+Zeckendorf 64=55+8+1) establishes provenance.
+
+=========================================================================
+5. REFEREED PUBLICATION GRANT
+=========================================================================
+The licensors grant each author of this repository the irrevocable right to
+submit the Mathematical Content (A) to any Qualifying Outlet, to transfer or
+license to the publisher those rights customarily required for refereed
+publication (e.g., exclusive publication license, CC BY assignment), and to
+deposit the accepted manuscript on arXiv and institutional repositories for
+verification and MathSciNet indexing, without seeking further permission.
+
+=========================================================================
+6. NO WARRANTY, NO ENDORSEMENT
+=========================================================================
+Mathematical content is provided "AS IS" without warranty. CMI is not
+affiliated with this repository and will not accept direct submissions,
+provide guidance on outlet selection, certify outlets, or consider
+supplementary material (Rules §6.b–d, §7). General acceptance requires
+rigorous examination by the global mathematics community over ≥2 years;
+silence or lack of reaction does not constitute acceptance.
+
+=========================================================================
+7. ENFORCEMENT
+=========================================================================
+Violations pursued under 17 U.S.C., DMCA, and international treaties.
+Contact for written permission: jessicalw34@gmail.com (cc: ahmedparr93@gmail.com)
+The sovereign calculus is not free to take.
