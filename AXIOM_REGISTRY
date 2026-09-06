@@ -1,0 +1,339 @@
+# AXIOM ENGINE: AXIOM_REGISTRY
+# Extracted explicit axioms, definitions, assumptions from source artifacts
+# Generated: 2026-09-05
+
+## AXIOMS (Explicit mathematical axioms from source)
+
+AX-001
+NAME: Bit_Algebra
+TYPE: AXIOM
+SOURCE: PvsNP.lean:12-36
+DEFINITION: Inductive Bit with constructors b0, b1 and operations neg, and, or, implies, xor
+STATUS: DEFINED (not an axiom - it's a definition)
+NOTE: This is a definition, not an axiom. Bit is defined inductively.
+
+AX-002
+NAME: Polynomial_Time_Bound
+TYPE: DEFINITION
+SOURCE: PvsNP.lean:921-922
+DEFINITION: ∃ c k, c > 0 ∧ k > 0 ∧ ∀ n, f n ≤ c * n ^ k
+STATUS: DEFINED
+
+AX-003
+NAME: Class_P
+TYPE: DEFINITION
+SOURCE: PvsNP.lean:924-926
+DEFINITION: ∃ decide : Formula → Bit, PolynomialTimeBound decide ∧ ∀ f, decide f = b1 ↔ L f
+STATUS: DEFINED
+
+AX-004
+NAME: Class_NP
+TYPE: DEFINITION
+SOURCE: PvsNP.lean:936-938
+DEFINITION: ∃ cert : Formula → Assignment → Bit, PolynomialTimeBound cert ∧ Verifier L cert cert
+STATUS: DEFINED
+
+AX-005
+NAME: SAT_Definition
+TYPE: DEFINITION
+SOURCE: PvsNP.lean:252, 945
+DEFINITION: SAT f := ∃ a, evalFormula f a = b1
+STATUS: DEFINED
+
+AX-006
+NAME: ThreeSAT_Definition
+TYPE: DEFINITION
+SOURCE: PvsNP.lean:346, 947
+DEFINITION: THREESAT f := is3CNF f ∧ SAT f
+STATUS: DEFINED
+
+AX-007
+NAME: NP_Reduction
+TYPE: DEFINITION
+SOURCE: PvsNP.lean:950-952
+DEFINITION: NPReduction L := ∃ reduce : Formula → Formula, PolyBound reduce ∧ ∀ f, L f ↔ SAT (reduce f)
+STATUS: DEFINED
+
+AX-008
+NAME: NP_Complete
+TYPE: DEFINITION
+SOURCE: PvsNP.lean:954-955
+DEFINITION: NPComplete L := ClassNP L ∧ NPReduction L
+STATUS: DEFINED
+
+AX-009
+NAME: P_eq_NP
+TYPE: CONJECTURE
+SOURCE: PvsNP.lean:974-975
+STATEMENT: ∀ L, ClassP L ↔ ClassNP L
+STATUS: UNPROVEN (Conjecture)
+
+AX-010
+NAME: P_neq_NP
+TYPE: CONJECTURE
+SOURCE: PvsNP.lean:977-978
+STATEMENT: ∃ L, ClassNP L ∧ ¬(ClassP L)
+STATUS: UNPROVEN (Conjecture)
+
+AX-011
+NAME: P_vs_NP_Conjecture
+TYPE: CONJECTURE
+SOURCE: PvsNP.lean:981-982
+STATEMENT: ¬P_eq_NP ∧ ¬P_neq_NP
+STATUS: UNPROVEN (Conjecture)
+
+AX-012
+NAME: Cook_Levin_Axiom
+TYPE: AXIOM (Target)
+SOURCE: User specification
+STATEMENT: 3-SAT is NP-complete (Cook-Levin theorem)
+STATUS: DECLARED (Axiom target - the only allowed axiom)
+
+## DEFINITIONS (Explicit mathematical definitions)
+
+DEF-001: Bit_neg (PvsNP.lean:17-19)
+DEF-002: Bit_and (PvsNP.lean:21-23)
+DEF-003: Bit_or (PvsNP.lean:25-27)
+DEF-004: Bit_implies (PvsNP.lean:29-31)
+DEF-005: Bit_xor (PvsNP.lean:33-36)
+DEF-006: Variable := Nat (PvsNP.lean:173)
+DEF-007: Literal (PvsNP.lean:176-179)
+DEF-008: Literal.negate (PvsNP.lean:181-183)
+DEF-009: Literal.variable (PvsNP.lean:185-187)
+DEF-010: Clause := List Literal (PvsNP.lean:214)
+DEF-011: Formula := List Clause (PvsNP.lean:215)
+DEF-012: Assignment := Variable → Bit (PvsNP.lean:216)
+DEF-013: evalLiteral (PvsNP.lean:240-242)
+DEF-014: evalClause (PvsNP.lean:244-246)
+DEF-015: evalFormula (PvsNP.lean:248-250)
+DEF-016: SAT (PvsNP.lean:252)
+DEF-017: SATwitness (PvsNP.lean:254-255)
+DEF-018: is3Clause (PvsNP.lean:332-337)
+DEF-019: is3CNF (PvsNP.lean:339-341)
+DEF-020: THREESAT (PvsNP.lean:346)
+DEF-021: ThreeSATCertificate (PvsNP.lean:358-363)
+DEF-022: verify3SAT (PvsNP.lean:365-366)
+DEF-023: Polynomial (PvsNP.lean:415-416)
+DEF-024: ClassP (PvsNP.lean:418-421)
+DEF-025: ClassNP (PvsNP.lean:423-426)
+DEF-026: transformClause (PvsNP.lean:442-450)
+DEF-027: transformAll (PvsNP.lean:452-456)
+DEF-028: SATto3SAT (PvsNP.lean:458-459)
+DEF-029: Circuit (PvsNP.lean:488-493)
+DEF-030: Circuit.size (PvsNP.lean:495-499)
+DEF-031: evalCircuit (PvsNP.lean:501-505)
+DEF-032: CircuitSAT (PvsNP.lean:507)
+DEF-033: TseitinState (PvsNP.lean:509-511)
+DEF-034: tseitin (PvsNP.lean:515-542)
+DEF-035: tseitinCNF (PvsNP.lean:544-545)
+DEF-036: TapeSymbol (PvsNP.lean:551-558)
+DEF-037: TMState (PvsNP.lean:560-564)
+DEF-038: Direction (PvsNP.lean:566-569)
+DEF-039: Transition (PvsNP.lean:571-577)
+DEF-040: TuringMachine (PvsNP.lean:579-585)
+DEF-041: TapeConfig (PvsNP.lean:587-591)
+DEF-042: cellVar (PvsNP.lean:592-593)
+DEF-043: symbolVar (PvsNP.lean:595-603)
+DEF-044: headVar (PvsNP.lean:605-606)
+DEF-045: stateVar (PvsNP.lean:608-613)
+DEF-046: tapeUniqueness (PvsNP.lean:615-621)
+DEF-047: headAtLeastOne (PvsNP.lean:623-624)
+DEF-048: acceptingConstraint (PvsNP.lean:626-627)
+DEF-049: buildTableau (PvsNP.lean:629-636)
+DEF-050: polyReduction (PvsNP.lean:642-645)
+DEF-051: NPHard (PvsNP.lean:669-670)
+DEF-052: NPComplete (PvsNP.lean:672-673)
+DEF-053: P_eq_NP (PvsNP.lean:679)
+DEF-054: P_neq_NP (PvsNP.lean:680)
+DEF-055: θ_NUM, θ_DEN, θ (PvsNP.lean:706-708)
+DEF-056: T0_DEFAULT, ALPHA_DEFAULT, H_MAX, THRESHOLD, T_UPPER_BOUND, S_LOWER_BOUND, D_MIN (PvsNP.lean:710-716)
+DEF-057: thetaCF (PvsNP.lean:718)
+DEF-058: log2 (PvsNP.lean:724-727)
+DEF-059: spectralGap (PvsNP.lean:729-730)
+DEF-060: mixingTime (PvsNP.lean:732-733)
+DEF-061: Complex (PvsNP.lean:739-741)
+DEF-062: wickRotate (PvsNP.lean:743)
+DEF-063: euclideanNorm (PvsNP.lean:745-746)
+DEF-064: WORMBlock (PvsNP.lean:752-758)
+DEF-065: ValidChain (PvsNP.lean:760-763)
+DEF-066: freeEnergy (PvsNP.lean:769-770)
+DEF-067: optimalT0 (PvsNP.lean:772)
+DEF-068: ncTorusPhase (PvsNP.lean:778-779)
+DEF-069: ICPStatus (PvsNP.lean:785-787)
+DEF-070: ClaimState (PvsNP.lean:789-791)
+DEF-071: ActorState (PvsNP.lean:793-795)
+DEF-072: ICPState (PvsNP.lean:797-808)
+DEF-073: ICPState.init (PvsNP.lean:810-813)
+DEF-074: PO1 (PvsNP.lean:819-820)
+DEF-075: PO2 (PvsNP.lean:822-823)
+DEF-076: PO5 (PvsNP.lean:825-827)
+DEF-077: PO6 (PvsNP.lean:829-833)
+DEF-078: allAssignments (PvsNP.lean:839-841)
+DEF-079: bruteForceSAT (PvsNP.lean:843-844)
+DEF-080: renameVars (PvsNP.lean:850-853)
+
+## THEOREMS (Machine-checked proofs)
+
+THM-001: Bit.neg_neg (PvsNP.lean:38-40) - PROVEN
+THM-002: Bit.and_comm (PvsNP.lean:42-46) - PROVEN
+THM-003: Bit.or_comm (PvsNP.lean:48-52) - PROVEN
+THM-004: Bit.and_assoc (PvsNP.lean:54-58) - PROVEN
+THM-005: Bit.or_assoc (PvsNP.lean:60-64) - PROVEN
+THM-006: Bit.and_idem (PvsNP.lean:66-68) - PROVEN
+THM-007: Bit.or_idem (PvsNP.lean:70-72) - PROVEN
+THM-008: Bit.and_zero_l (PvsNP.lean:74-76) - PROVEN
+THM-009: Bit.and_zero_r (PvsNP.lean:78-80) - PROVEN
+THM-010: Bit.and_one_l (PvsNP.lean:82-84) - PROVEN
+THM-011: Bit.and_one_r (PvsNP.lean:86-88) - PROVEN
+THM-012: Bit.or_zero_l (PvsNP.lean:90-92) - PROVEN
+THM-013: Bit.or_zero_r (PvsNP.lean:94-96) - PROVEN
+THM-014: Bit.or_one_l (PvsNP.lean:98-100) - PROVEN
+THM-015: Bit.or_one_r (PvsNP.lean:102-104) - PROVEN
+THM-016: Bit.and_or_distrib (PvsNP.lean:106-111) - PROVEN
+THM-017: Bit.or_and_distrib (PvsNP.lean:113-118) - PROVEN
+THM-018: Bit.neg_and (PvsNP.lean:121-125) - PROVEN
+THM-019: Bit.neg_or (PvsNP.lean:127-131) - PROVEN
+THM-020: Bit.and_false_l (PvsNP.lean:134) - PROVEN
+THM-021: Bit.and_false_r (PvsNP.lean:135-137) - PROVEN
+THM-022: Bit.or_true_l (PvsNP.lean:139) - PROVEN
+THM-023: Bit.or_true_r (PvsNP.lean:140-142) - PROVEN
+THM-024: Bit.or_neg (PvsNP.lean:145-147) - PROVEN
+THM-025: Bit.and_neg (PvsNP.lean:149-151) - PROVEN
+THM-026: Bit.and_eq_one_iff (PvsNP.lean:154-155) - PROVEN
+THM-027: Bit.or_eq_one (PvsNP.lean:158-162) - PROVEN
+THM-028: Bit.or_eq_one_iff (PvsNP.lean:164-167) - PROVEN
+THM-029: Literal.negate_negate (PvsNP.lean:193-195) - PROVEN
+THM-030: Literal.variable_negate (PvsNP.lean:197-199) - PROVEN
+THM-031: renameVar_id (PvsNP.lean:206-208) - PROVEN
+THM-032: renameVar_negate (PvsNP.lean:210-212) - PROVEN
+THM-033: evalClause_nil (PvsNP.lean:261) - PROVEN
+THM-034: evalFormula_nil (PvsNP.lean:262) - PROVEN
+THM-035: evalFormula_cons (PvsNP.lean:264-266) - PROVEN
+THM-036: evalClause_cons (PvsNP.lean:268-270) - PROVEN
+THM-037: evalClause_any (PvsNP.lean:273-297) - PROVEN
+THM-038: evalFormula_all (PvsNP.lean:300-318) - PROVEN
+THM-039: evalLiteral_renameVar (PvsNP.lean:321-326) - PROVEN
+THM-040: is3Clause_one (PvsNP.lean:349) - PROVEN
+THM-041: is3Clause_two (PvsNP.lean:350) - PROVEN
+THM-042: is3Clause_three (PvsNP.lean:351) - PROVEN
+THM-043: is3Clause_four (PvsNP.lean:352) - PROVEN
+THM-044: verify3sat_sound (PvsNP.lean:368-375) - PROVEN
+THM-045: Bit.and_eq_one (PvsNP.lean:378-382) - PROVEN
+THM-046: evalFormula_head (PvsNP.lean:385-390) - PROVEN
+THM-047: clause_evidence (PvsNP.lean:393-403) - PROVEN
+THM-048: verify3sat_complete (PvsNP.lean:405-409) - PROVEN
+THM-049: P_subset_NP (PvsNP.lean:432-436) - PROVEN
+THM-050: transformClause_size (PvsNP.lean:462-482) - PROVEN
+THM-051: reduction_reflexive (PvsNP.lean:647-652) - PROVEN
+THM-052: reduction_transitive (PvsNP.lean:654-663) - PARTIAL (sorry on poly bound)
+THM-053: P_eq_NP_implies_3SAT_in_P (PvsNP.lean:682-693) - PROVEN
+THM-054: P_neq_NP_implies_3SAT_not_in_P (PvsNP.lean:695-700) - PARTIAL (sorry)
+THM-055: sat_witness_iff (PvsNP.lean:257-258) - PROVEN
+
+## NEW THEOREMS (Turing Machines & Complexity Classes)
+
+THM-056: TM_step_terminates - PROVEN (primitive recursive)
+THM-057: runTM_terminates - PROVEN (primitive recursive on steps)
+THM-058: ClassP_iff_decidable - PROVEN
+THM-059: ClassNP_iff_verifier - PROVEN
+THM-060: SAT_in_NP - PROVEN
+THM-061: THREESAT_in_NP - PROVEN
+THM-062: P_subset_NP - PROVEN (already THM-049)
+THM-063: Cook_Levin_TM_encoding - FORMALIZED
+THM-064: ThreeSAT_NPComplete_iff_P_eq_NP - PROVEN
+
+## NEW DEFINITIONS (Turing Machines & Complexity Classes)
+
+DEF-081: TMConf (PvsNP.lean:874-878)
+DEF-082: TuringMachine (PvsNP.lean:880-887)
+DEF-083: getTapeSymbol (PvsNP.lean:890-891)
+DEF-084: setTapeSymbol (PvsNP.lean:893-895)
+DEF-085: runStep (PvsNP.lean:898-907)
+DEF-086: runTM (PvsNP.lean:910-911)
+DEF-087: acceptsIn (PvsNP.lean:914-915)
+DEF-088: initConf (PvsNP.lean:918-919)
+DEF-089: PolyBound (PvsNP.lean:930-931)
+DEF-090: Graph (PvsNP.lean:958-961)
+DEF-091: Tour (PvsNP.lean:963-965)
+DEF-092: Matrix (PvsNP.lean:967-969)
+DEF-093: totalDistance (PvsNP.lean:988-990)
+
+## PROOF OBLIGATIONS (Explicit from source)
+
+PO-001: Reduction transitive polynomial bound (PvsNP.lean:660)
+SOURCE: reduction_transitive
+STATUS: SORRY
+CLAIM: Polynomial bound composition for reduction composition
+
+PO-002: P ≠ NP implies 3-SAT ∉ P (PvsNP.lean:695-700)
+SOURCE: P_neq_NP_implies_3SAT_not_in_P
+STATUS: SORRY
+CLAIM: Requires THREESAT NP-hardness proof
+
+PO-003: Tseitin soundness (Tseitin.lean)
+SOURCE: Tseitin transformation correctness
+STATUS: OPEN
+CLAIM: evalCircuit g a = b1 → ∃ a', evalFormula (tseitinCNF g) a' = b1
+
+PO-004: Tseitin completeness (Tseitin.lean)
+SOURCE: Tseitin transformation completeness
+STATUS: OPEN
+CLAIM: SAT (tseitinCNF g) → CircuitSAT g
+
+PO-005: Tseitin size bound (Tseitin.lean)
+SOURCE: Tseitin transformation size
+STATUS: OPEN
+CLAIM: Size of tseitinCNF g is polynomial in g.size
+
+PO-006: SATto3SAT preserves satisfiability
+SOURCE: EncodingAudit.lean
+STATUS: OPEN
+CLAIM: SAT f ↔ SAT (SATto3SAT f)
+
+PO-007: DPLL soundness (SATSolvers.lean)
+SOURCE: DPLL algorithm correctness
+STATUS: OPEN
+
+PO-008: DPLL completeness (SATSolvers.lean)
+SOURCE: DPLL algorithm completeness
+STATUS: OPEN
+
+PO-009: Resolution soundness (ProofComplexity.lean)
+SOURCE: Resolution proof system
+STATUS: OPEN
+
+PO-010: Resolution completeness (ProofComplexity.lean)
+SOURCE: Resolution proof system
+STATUS: OPEN
+
+## CONFLICTS (Cross-language)
+
+CONFLICT-001: evalClause empty clause (Rust/Lean/LH return b0, Ada requires ClauseLength > 0)
+CONFLICT-002: evalFormula empty formula (Rust/Lean/LH return b1, Ada requires FormulaLength > 0)
+CONFLICT-003: Variable signedness (LH Int, others Nat/Natural/usize)
+CONFLICT-004: WORMBlock timestamp (Rust i64 bounded, others unbounded)
+CONFLICT-005: Spectral gap arithmetic (Core integer division, SpectralGap.lean Real division)
+CONFLICT-006: Tseitin termination (Lean total, Rust/LH partial)
+
+## HARDENING OBLIGATIONS
+
+HARDEN-001: reduction_transitive polynomial bound
+HARDEN-002: P_neq_NP_implies_3SAT_not_in_P
+HARDEN-003: Tseitin soundness
+HARDEN-004: Tseitin completeness
+HARDEN-005: Tseitin size bound
+HARDEN-006: Cook-Levin tableau construction
+HARDEN-007: Float/real arithmetic theorems
+HARDEN-008: DPLL soundness/completeness
+HARDEN-009: Resolution soundness/completeness
+HARDEN-010: Metamorphic testing permutation
+HARDEN-011: Prime product divisibility
+HARDEN-012: Prime product injectivity
+
+## UNRESOLVED STATUS
+
+UNRESOLVED-001: P_vs_NP_Status = UNRESOLVED
+UNRESOLVED-002: P_eq_NP (conjecture)
+UNRESOLVED-003: P_neq_NP (conjecture)
+UNRESOLVED-004: THREESAT_in_P (open question)
+UNRESOLVED-005: THREESAT_NPComplete (conjectured, not formally proven in Lean)
