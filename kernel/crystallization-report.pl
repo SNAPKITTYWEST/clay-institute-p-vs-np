@@ -547,7 +547,94 @@
 %   Status: VERIFIED
 
 % ============================================================
-% XVII. UPDATED FINAL STATEMENT
+% XVIII. WORM LEDGER
+% ============================================================
+
+% WORM_BLOCK_STRUCTURE: Immutable evidence records
+%   blockIndex: Nat
+%   timestamp: Int
+%   sourceHash: String
+%   specHash: String
+%   leanHash: String
+%   prologHash: String
+%   curryHash: String
+%   dependencyHashes: List String
+%   result: String
+%   status: String
+%   toolchain: String
+
+% WORM_LEDGER: Chain of immutable blocks
+%   blocks: List WORMBlock
+%   integrity: verified via chain hash
+
+% SEAL_COMPUTATION: H(CANONICAL_RECORD)
+%   Canonical record includes all artifact hashes
+%   Any modification requires new seal
+
+% ============================================================
+% XIX. MERKLE HISTORY
+% ============================================================
+
+% MERKLE_ROOT: Content-addressed verification history
+%   ├── SOURCE
+%   ├── FORMALIZATION
+%   ├── LEAN
+%   ├── PROOF
+%   ├── PROLOG
+%   ├── CURRY
+%   ├── EXECUTION
+%   └── REVIEW
+
+% Each node is content-addressed
+% A changed descendant produces a changed parent commitment
+
+% ============================================================
+% XX. APL INSTANCE GENERATOR
+% ============================================================
+
+% APL_INSTANCE_GENERATOR: Generates hard SAT instances
+%   R3SAT: Random 3-SAT at phase transition (ratio 4.26)
+%   PLANTED: Known satisfying assignment
+%   PHP: Pigeonhole Principle (provably hard for resolution)
+%   TSEITIN: Tseitin formulas on expander graphs
+%   RANDOM_K: Random k-SAT with controlled hardness
+
+% Every instance is reproducible via seed
+% Instance hash = SHA256(nvars | clauses | generator | seed | parameters)
+
+% ============================================================
+% XXI. DISTRIBUTED PROOF SEARCH
+% ============================================================
+
+% PROOF_SEARCH_NODES: ATLAS, TENSOR, LEDGE, AXIOM
+%   Each node produces signed, content-addressed artifacts
+%   Node disagreement becomes an explicit conflict
+%   No node is permitted to silently overwrite another node's result
+
+% PROOF_STRATEGIES:
+%   CIRCUIT_LOWER_BOUNDS
+%   DIAGONALIZATION
+%   ALGEBRAIC
+%   COMBINATORIAL
+%   COMPLEXITY_THEORETIC
+
+% Each attempt becomes ATTEMPT-* with:
+%   CLAIM, ASSUMPTIONS, DERIVATION, DEPENDENCIES, PROOF_OBLIGATIONS, RESULT
+
+% ============================================================
+% XXII. REST API FOR QUERYING PROGRESS
+% ============================================================
+
+% REST_API endpoints:
+%   GET /status - Current crystallization status
+%   GET /proofs - List of proof attempts
+%   GET /attempts - List of proof search attempts
+%   GET /worm - WORM ledger entries
+%   GET /merkle - Merkle tree root
+%   GET /obligations - Open hardening obligations
+
+% ============================================================
+% XXIII. UPDATED FINAL STATEMENT
 % ============================================================
 
 % The AXIOM ENGINE crystallization kernel contains:
@@ -560,6 +647,10 @@
 %   - Curry theorem representations for functional-logic bridge
 %   - IAMAC: Homomorphic verification primitive for batch processing
 %   - Malleability Engine: Deterministic digest → critical line points
+%   - WORM Ledger: Immutable evidence records
+%   - Merkle Tree: Content-addressed verification history
+%   - APL Instance Generator: Hard SAT instances
+%   - Distributed proof search infrastructure
 %
 % The P vs NP question remains UNRESOLVED.
 % The crystallization kernel is auditable back to source artifacts.

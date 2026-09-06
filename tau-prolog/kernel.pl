@@ -329,3 +329,126 @@ verification_record(
 
 % Query: List open hardening obligations
 :- query(open_obligations, hardening(H, D, open, P)).
+
+% ============================================================
+% XII. WORM LEDGER
+% ============================================================
+
+% WORM block structure
+worm_block(BlockIndex, Timestamp, SourceHash, SpecHash, LeanHash, PrologHash, CurryHash, Result, Status).
+
+% WORM ledger - chain of blocks
+worm_ledger([]).
+worm_ledger([Block | Rest]) :- worm_ledger(Rest).
+
+% Append a block to the ledger
+worm_append([], Block, [Block]).
+worm_ledger([H | T]) :- worm_append(T, Block, [H | T]).
+
+% Verify ledger integrity
+worm_verify([], true).
+worm_verify([Block], true) :- worm_block_hash(Block, Hash).
+worm_verify([B1, B2 | Rest]) :-
+    worm_block_hash(B1, Hash1),
+    worm_block_hash(B2, Hash2),
+    Hash1 == Hash2,
+    worm_verify([B2 | Rest]).
+
+% Compute block hash
+worm_block_hash(Block, Hash) :-
+    worm_block(Block, _, _, _, _, _, _, _, _),
+    term_hash(Block, Hash).
+
+% ============================================================
+% XIII. MERKLE TREE
+% ============================================================
+
+% Merkle node
+merkle_node(Hash, Left, Right, Data).
+
+% Compute Merkle root from leaves
+merkle_root([Leaf], Leaf).
+merkle_root(Leaves) :-
+    % Pair up leaves and hash
+    pairs(Leaves, Pairs),
+    maplist(hash_pair, Pairs, NewLeaves),
+    merkle_root(NewLeaves).
+
+% Hash a pair of leaves
+hash_pair((A, B), Hash) :-
+    atom_concat(A, B, Combined),
+    term_hash(Combined, Hash).
+
+% Create pairs from list
+pairs([], []).
+pairs([X], [X]).
+pairs([X, Y | Rest], [(X, Y) | Pairs]) :-
+    pairs(Rest, Pairs).
+
+% ============================================================
+% XIV. EVIDENCE RECORD
+% ============================================================
+
+% Evidence record for crystallization
+evidence_record(ArtifactId, SourceHash, SpecHash, LeanHash, PrologHash, CurryHash, Result, Status).
+
+% ============================================================
+% XV. CRYSTALLIZATION SEAL
+% ============================================================
+
+% Crystallization seal
+crystallization_seal(SourceHashes, InvariantHashes, TheoremHashes, AxiomHashes,
+                     ConflictHashes, HardeningHashes, PrologKernelHash,
+                     CurryArtifactHash, TauPrologConfig, ClosureStatus,
+                     HardeningStatus, RefactorStatus, Seal).
+
+% Verify seal
+seal_verify(Seal, Verified) :-
+    compute_seal(Seal, Computed),
+    (Computed == Seal -> Verified = true ; Verified = false).
+
+% Compute seal from fields
+compute_seal(crystallization_seal(S, I, T, A, C, H, P, K, Tau, CS, HS, RS, Seal), Seal).
+
+% ============================================================
+% XVI. PROOF ATTEMPT TRACKING
+% ============================================================
+
+% Proof attempt
+proof_attempt(Claim, Assumptions, Derivation, Dependencies, ProofObligations, Result, Status, Sealed).
+
+% Seal a proof attempt
+seal_attempt(Attempt, WORMIndex) :-
+    proof_attempt(Attempt, _, _, _, _, _, _, _),
+    seal_attempt_to_worm(Attempt, WORMIndex).
+
+% ============================================================
+% XVII. PROOF STATUS CLASSIFICATION
+% ============================================================
+
+% Proof status
+proof_status_class(Status, Classification) :-
+    (Status = proven -> Classification = 'PROVEN' ;
+     Status = unresolved -> Classification = 'UNRESOLVED' ;
+     Status = formalized -> Classification = 'FORMALIZED' ;
+     Classification = 'OPEN').
+
+% ============================================================
+% XVIII. FINAL OUTPUT
+% ============================================================
+
+% Final output categories
+final_output('FORMAL DEFINITIONS').
+final_output('AXIOMS').
+final_output('INVARIANTS').
+final_output('LEAN ARTIFACTS').
+final_output('PROOF OBLIGATIONS').
+final_output('CHECKED THEOREMS').
+final_output('COUNTEREXAMPLES').
+final_output('RUST/ADA/LEAN CONSISTENCY').
+final_output('PROLOG KERNEL').
+final_output('CURRY REPRESENTATIONS').
+final_output('TAU PROLOG RESULTS').
+final_output('WORM RECORDS').
+final_output('MERKLE ROOT').
+final_output('UNRESOLVED OBLIGATIONS').
