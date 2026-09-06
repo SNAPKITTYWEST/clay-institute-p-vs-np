@@ -1,0 +1,10 @@
+[package]
+name = "axiom-engine"
+version = "0.1.0"
+edition = "2021"
+description = "AXIOM Engine: P vs NP Multi-Formalization"
+authors = ["Ahmad Ali Parr", "Jessica Westerhoff"]
+
+[dependencies]
+
+[dev-dependencies]
