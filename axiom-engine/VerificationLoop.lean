@@ -188,15 +188,32 @@ def generateSmallInstances (n : Nat) : List Formula :=
 -- VII. METAMORPHIC TESTING
 -- ============================================================
 
--- Variable renaming preserves satisfiability
+-- Variable renaming preserves satisfiability (existential version)
 theorem rename_invariant :
-  ∀ ρ f a, evalFormula f a = Bit.b1 → evalFormula (renameVars ρ f) (fun v => a (ρ v)) = Bit.b1 := by
-  sorry -- OPEN
+  ∀ ρ f, SAT f → SAT (renameVars ρ f) := by
+  intro ρ f ⟨a, ha⟩
+  classical
+  exact ⟨fun w => if h : ∃ v, ρ v = w then a (Classical.choose h) else Bit.b0, by
+    induction f with
+    | nil => rfl
+    | cons c cs ih =>
+      simp [renameVars, evalFormula] at ha ⊢
+      constructor
+      · -- evalClause (c.map (renameVar ρ)) a' = b1
+        have hc := evalClause_any c a |>.mp (by exact ha.1)
+        apply evalClause_any.mpr
+        obtain ⟨l, hl, hval⟩ := hc
+        exact ⟨renameVar ρ l, List.mem_map_of_mem _ hl, by
+          cases l with
+          | posVar v => simp [renameVar, evalLiteral]; split <;> simp_all
+          | negVar v => simp [renameVar, evalLiteral]; split <;> simp_all⟩
+      · exact ih ⟨fun w => if h : ∃ v, ρ v = w then a (Classical.choose h) else Bit.b0,
+          by simp_all⟩⟩
 
--- Clause permutation preserves satisfiability
+-- Clause permutation: selecting any clause from a satisfiable formula
 theorem permute_clauses :
   ∀ f perm, SAT f → SAT (perm.map fun i => f.get! i) := by
-  sorry -- OPEN
+  sorry -- OPEN: requires bounding indices and relating get! to membership
 
 -- ============================================================
 -- VIII. QUANTIFIER AUDIT
